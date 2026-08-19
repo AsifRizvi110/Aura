@@ -1,0 +1,6 @@
+{
+  "name": "Aura Global Industries",
+  "description": "Premium Cap Manufacturer & Exporter based in Karachi, Pakistan, delivering high-quality custom headwear for global brands and businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
