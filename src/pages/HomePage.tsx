@@ -301,7 +301,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 src={selectedMaterial.imageUrl}
                 alt={`${selectedMaterial.name} fabric close-up - Aura Global Industries`}
                 referrerPolicy="no-referrer"
-                className="w-full h-full object-cover mt-2"
+                className="w-full h-auto object-contain block"
               />
               <div className="absolute top-3 left-3 bg-black/80 px-2.5 py-1 rounded-sm text-[10px] uppercase tracking-wider font-semibold text-[#F27D26] border border-white/10">
                 {selectedMaterial.type}

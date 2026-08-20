@@ -98,12 +98,12 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
           {/* Active Step Feature Box */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
             <div className="lg:col-span-6 relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-slate-950">
-              <img
-                src={currentStepData.imageUrl}
-                alt={`${currentStepData.title} at Aura Global Industries Factory`}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
-              />
+               <img
+    src={currentStepData.imageUrl}
+    alt={`${currentStepData.title} at Aura Global Industries Factory`}
+    referrerPolicy="no-referrer"
+    className="w-full h-auto object-contain block"
+  />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-md p-3 rounded-xl border border-white/10 text-xs text-slate-300">
                 <span className="text-[#D4AF37] font-semibold">Factory Checkpoint: </span>
@@ -181,7 +181,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Custom Fabric Options Headwear Fabric.png"
               alt="Material Selection at Aura Global Industries"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain block  "
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Design & Development.png"
               alt="Design and Development CAD Pattern Engineering"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain block"
             />
           </div>
           <div className="space-y-3 md:order-1">
@@ -235,7 +235,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Accurate Cutting & Stitching.png"
               alt="Precision stitching line in Karachi factory"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain block"
             />
           </div>
         </div>
@@ -247,7 +247,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/05 Embroidery  Printing.png"
               alt="High-density 3D puff embroidery"
               referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain block"
             />
           </div>
           <div className="space-y-3 md:order-1">
