@@ -14,6 +14,7 @@ import { ToastProvider } from './context/ToastContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ToastContainer } from './components/Toast';
 import { WhatsAppButton } from './components/WhatsAppButton';
+
 import { HomePage } from './pages/HomePage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ManufacturingPage } from './pages/ManufacturingPage';
@@ -22,17 +23,22 @@ import { ContactPage } from './pages/ContactPage';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
-  
-  // Modals state
+  const [selectedCategoryFilter, setSelectedCategoryFilter] =
+    useState<string>('all');
+
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
-  const [quotePreselectedProduct, setQuotePreselectedProduct] = useState<string>('');
-  
-  const [selectedProductForModal, setSelectedProductForModal] = useState<ProductItem | null>(null);
+  const [quotePreselectedProduct, setQuotePreselectedProduct] =
+    useState<string>('');
+
+  const [selectedProductForModal, setSelectedProductForModal] =
+    useState<ProductItem | null>(null);
 
   const handleNavigate = (page: PageId) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   const handleOpenQuoteModal = (productName?: string) => {
@@ -43,7 +49,11 @@ function AppContent() {
   const handleCategorySelectFromHome = (categorySlug: string) => {
     setSelectedCategoryFilter(categorySlug);
     setCurrentPage('products');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   const handleOpenProductDetail = (product: ProductItem) => {
@@ -52,18 +62,25 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0A0A0A] text-[#E5E5E5] font-sans antialiased selection:bg-[#F27D26] selection:text-white relative">
-      {/* Interactive Orange Particles Layer */}
+
+      {/* Background Particles */}
       <ParticlesBackground id="particles-js" />
 
-      {/* Top Navbar */}
+      {/* =========================================================
+          TOP NAVBAR
+      ========================================================= */}
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
         onOpenQuoteModal={() => handleOpenQuoteModal()}
       />
 
-      {/* Main Page Render */}
+      {/* =========================================================
+          MAIN PAGE
+      ========================================================= */}
       <main className="flex-grow relative z-10">
+
+        {/* ===================== HOME PAGE ===================== */}
         {currentPage === 'home' && (
           <HomePage
             onNavigate={handleNavigate}
@@ -73,6 +90,7 @@ function AppContent() {
           />
         )}
 
+        {/* ===================== PRODUCTS PAGE ===================== */}
         {currentPage === 'products' && (
           <ProductsPage
             initialCategoryFilter={selectedCategoryFilter}
@@ -81,12 +99,16 @@ function AppContent() {
           />
         )}
 
+        {/* ===================== MANUFACTURING PAGE ===================== */}
         {currentPage === 'manufacturing' && (
           <ManufacturingPage
-            onOpenQuoteModal={() => handleOpenQuoteModal('Custom Production Batch')}
+            onOpenQuoteModal={() =>
+              handleOpenQuoteModal('Custom Production Batch')
+            }
           />
         )}
 
+        {/* ===================== ABOUT PAGE ===================== */}
         {currentPage === 'about' && (
           <AboutPage
             onNavigate={handleNavigate}
@@ -94,36 +116,51 @@ function AppContent() {
           />
         )}
 
+        {/* ===================== CONTACT PAGE ===================== */}
         {currentPage === 'contact' && (
           <ContactPage />
         )}
+
       </main>
 
-      {/* Corporate Footer */}
+      {/* =========================================================
+          CORPORATE FOOTER
+      ========================================================= */}
       <Footer
         onNavigate={handleNavigate}
         onOpenQuoteModal={() => handleOpenQuoteModal()}
       />
 
-      {/* Request Quote Modal */}
+      {/* =========================================================
+          QUOTE MODAL
+      ========================================================= */}
       <QuoteModal
         isOpen={quoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
         preselectedProduct={quotePreselectedProduct}
       />
 
-      {/* Product Detail Modal */}
+      {/* =========================================================
+          PRODUCT DETAIL MODAL
+      ========================================================= */}
       <ProductDetailModal
         product={selectedProductForModal}
         onClose={() => setSelectedProductForModal(null)}
-        onRequestQuote={(prodName) => handleOpenQuoteModal(prodName)}
+        onRequestQuote={(prodName) =>
+          handleOpenQuoteModal(prodName)
+        }
       />
 
-      {/* Global Toast Notifications */}
+      {/* =========================================================
+          TOAST
+      ========================================================= */}
       <ToastContainer />
 
-      {/* Floating Animated WhatsApp Direct Chat Button */}
+      {/* =========================================================
+          WHATSAPP
+      ========================================================= */}
       <WhatsAppButton phoneNumber="923421509973" />
+
     </div>
   );
 }
@@ -137,5 +174,3 @@ export default function App() {
     </LanguageProvider>
   );
 }
-
-

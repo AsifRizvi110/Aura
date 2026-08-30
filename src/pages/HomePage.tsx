@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { PageId, ProductItem } from '../types';
+import { CapCustomizer } from '../components/CapCustomizer';
 import {
   PRODUCT_CATEGORIES,
   FABRIC_MATERIALS,
@@ -201,6 +202,23 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+
+
+          {/* =========================================================
+    360° CAP CUSTOMIZER
+    HERO KE BAAD
+========================================================= */}
+<section
+  id="cap-customizer-section"
+  className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+>
+  <CapCustomizer />
+</section>
+
+      {/* ========================================================================= */}
+      {/* 2. PRODUCT QUALITY SECTION */}
+      {/* ========================================================================= */}
+      <section id="quality-section"></section>
 
       {/* ========================================================================= */}
       {/* 2. PRODUCT QUALITY SECTION */}
