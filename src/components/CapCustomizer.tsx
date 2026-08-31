@@ -12,6 +12,7 @@ import {
   Download,
   X,
   Box,
+  Pipette,
 } from "lucide-react";
 
 const COLORS = [
@@ -54,7 +55,7 @@ export const CapCustomizer: React.FC = () => {
 
     modelRef.current.traverse((child) => {
       if (!(child as THREE.Mesh).isMesh) return;
-      if (child.name === "UploadedFrontLogo") return; // Logo color ko change nahi hone dena
+      if (child.name === "UploadedFrontLogo") return;
 
       const mesh = child as THREE.Mesh;
 
@@ -74,6 +75,11 @@ export const CapCustomizer: React.FC = () => {
         mesh.material.needsUpdate = true;
       }
     });
+  };
+
+  const handleColorChange = (newColor: string) => {
+    setCapColor(newColor);
+    updateCapColor(newColor);
   };
 
   // =========================================================
@@ -129,7 +135,7 @@ export const CapCustomizer: React.FC = () => {
   };
 
   // =========================================================
-  // 4. FIND FRONT CAP POSITION & APPLY LOGO (FIXED DECAL LOGIC)
+  // 4. FIND FRONT CAP POSITION & APPLY LOGO
   // =========================================================
   const createFrontLogo = (image: HTMLImageElement) => {
     const capMesh = frontCapMeshRef.current;
@@ -147,12 +153,10 @@ export const CapCustomizer: React.FC = () => {
 
     capMesh.updateWorldMatrix(true, true);
 
-    // Front Panel Raycasting
     const box = new THREE.Box3().setFromObject(capMesh);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
 
-    // Front forehead position calculation
     const rayOrigin = new THREE.Vector3(center.x, center.y + size.y * 0.1, box.max.z + 5);
     const rayDirection = new THREE.Vector3(0, 0, -1);
 
@@ -173,14 +177,12 @@ export const CapCustomizer: React.FC = () => {
       hitPoint = new THREE.Vector3(center.x, center.y + size.y * 0.1, box.max.z);
     }
 
-    // Orientation Calculation using Normal
     const dummy = new THREE.Object3D();
     dummy.position.copy(hitPoint);
     dummy.lookAt(hitPoint.clone().add(hitNormal));
-    dummy.rotation.z = 0; // Upright logo
+    dummy.rotation.z = 0;
     const orientation = dummy.rotation;
 
-    // Aspect Ratio & Dimensions
     const logoMaxWidth = 0.55;
     const logoMaxHeight = 0.38;
     const imageRatio = image.width / image.height;
@@ -216,9 +218,8 @@ export const CapCustomizer: React.FC = () => {
 
     const decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
     decalMesh.name = "UploadedFrontLogo";
-    decalMesh.renderOrder = 999; // Har halat mein cap ke upar render hoga
+    decalMesh.renderOrder = 999;
 
-    // Scene ke bajaye direct Cap ke andar add kiya taake sath rotate ho
     sceneRef.current?.add(decalMesh);
     logoDecalRef.current = decalMesh;
   };
@@ -338,7 +339,6 @@ export const CapCustomizer: React.FC = () => {
     controls.target.set(0, 0, 0);
     controlsRef.current = controls;
 
-    // Lighting Setup
     scene.add(new THREE.AmbientLight(0xffffff, 2.5));
     const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
     keyLight.position.set(4, 5, 5);
@@ -352,7 +352,6 @@ export const CapCustomizer: React.FC = () => {
     backLight.position.set(0, 3, -5);
     scene.add(backLight);
 
-    // Loader Logic
     const loader = new GLTFLoader();
     loader.load(
       "/cap.glb",
@@ -427,7 +426,6 @@ export const CapCustomizer: React.FC = () => {
       },
       undefined,
       () => {
-        // Procedural Fallback Cap
         const fallbackGroup = new THREE.Group();
         const dome = new THREE.Mesh(
           new THREE.SphereGeometry(0.9, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5),
@@ -481,6 +479,10 @@ export const CapCustomizer: React.FC = () => {
     };
   }, []);
 
+  const isCustomColor = !COLORS.some(
+    (c) => c.toLowerCase() === capColor.toLowerCase()
+  );
+
   const viewItems = [
     { id: "front" as ViewType, label: "Front" },
     { id: "threeQuarter" as ViewType, label: "3/4" },
@@ -515,25 +517,71 @@ export const CapCustomizer: React.FC = () => {
               </div>
             </div>
 
-            {/* COLOR */}
+            {/* COLOR SECTION WITH CUSTOM COLOR PICKER */}
             <div className="bg-[#292b2d] rounded-2xl p-4 mt-4">
-              <h3 className="font-bold text-xs uppercase tracking-wide mb-3">1. Choose Cap Color</h3>
-              <div className="grid grid-cols-4 gap-2.5">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-bold text-xs uppercase tracking-wide">1. Choose Cap Color</h3>
+                <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold">{capColor}</span>
+              </div>
+              
+              {/* Preset Colors + Custom Picker Button */}
+              <div className="grid grid-cols-5 gap-2">
                 {COLORS.map((color) => (
                   <button
                     key={color}
-                    onClick={() => {
-                      setCapColor(color);
-                      updateCapColor(color);
-                    }}
-                    className={`h-10 rounded-lg border-2 transition ${
+                    onClick={() => handleColorChange(color)}
+                    className={`h-9 rounded-lg border-2 transition ${
                       capColor.toLowerCase() === color.toLowerCase()
-                        ? "border-white scale-105 shadow-md"
+                        ? "border-white scale-105 shadow-md ring-2 ring-[#D4AF37]"
                         : "border-white/20"
                     }`}
                     style={{ backgroundColor: color }}
+                    title={color}
                   />
                 ))}
+
+                {/* Interactive Custom Color Button */}
+                <label
+                  title="Pick Custom Color"
+                  className={`relative h-9 rounded-lg border-2 flex items-center justify-center cursor-pointer transition overflow-hidden ${
+                    isCustomColor
+                      ? "border-white scale-105 shadow-md ring-2 ring-[#D4AF37]"
+                      : "border-white/30 hover:border-white"
+                  }`}
+                  style={{
+                    background: isCustomColor
+                      ? capColor
+                      : "conic-gradient(from 180deg at 50% 50%, #ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
+                  }}
+                >
+                  <Pipette size={14} className={isCustomColor ? "text-white drop-shadow-md" : "text-black drop-shadow-md"} />
+                  <input
+                    type="color"
+                    value={capColor}
+                    onChange={(e) => handleColorChange(e.target.value)}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
+                </label>
+              </div>
+
+              {/* Hex Code Input for Direct Custom Color */}
+              <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-semibold uppercase">Custom Hex:</span>
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={capColor}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val.startsWith("#") || val.length <= 7) {
+                        handleColorChange(val);
+                      }
+                    }}
+                    placeholder="#151719"
+                    maxLength={7}
+                    className="w-full bg-black/40 border border-white/20 focus:border-[#D4AF37] rounded-lg px-2.5 py-1 text-xs font-mono text-white outline-none uppercase"
+                  />
+                </div>
               </div>
             </div>
 
@@ -616,7 +664,7 @@ export const CapCustomizer: React.FC = () => {
 
           <button
             onClick={downloadImage}
-            className="w-full mt-6 bg-[#e1262d] hover:bg-[#c91d24] py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-wider shadow-lg transition"
+            className="w-full mt-0 bg-[#e1262d] hover:bg-[#c91d24] py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-wider shadow-lg transition"
           >
             <Download size={18} />
             DOWNLOAD 3D RENDER
