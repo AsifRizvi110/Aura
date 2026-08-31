@@ -77,7 +77,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
                   </span>
                 </div>
                 <p className="text-[10px] text-zinc-400 font-mono flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-[#D4AF37]" /> Nazimabad, Karachi • Factory Online
+                  <MapPin className="w-3 h-3 text-[#F27D26]" /> Nazimabad, Karachi • Factory Online
                 </p>
               </div>
             </div>
@@ -102,7 +102,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3 text-emerald-400" /> Avg. reply: Under 15 mins
                 </span>
-                <span className="text-[#D4AF37] flex items-center gap-0.5">
+                <span className="text-[#F27D26] flex items-center gap-0.5">
                   <ShieldCheck className="w-3 h-3" /> Verified Factory
                 </span>
               </div>

@@ -33,11 +33,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-zinc-900 border border-[#D4AF37]/30 text-[10px] uppercase tracking-wider text-[#D4AF37] font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-zinc-900 border border-[#F27D26]/30 text-[10px] uppercase tracking-wider text-[#F27D26] font-semibold">
                 <Globe2 className="w-3 h-3" /> Export Ready
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-sm bg-zinc-900 border border-white/10 text-[10px] uppercase tracking-wider text-zinc-300">
-                <ShieldCheck className="w-3 h-3 text-[#D4AF37]" /> Quality Assured
+                <ShieldCheck className="w-3 h-3 text-[#F27D26]" /> Quality Assured
               </span>
             </div>
           </div>
@@ -51,45 +51,45 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('home')}
-                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
+                  className="hover:text-[#F27D26] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRight className="w-3 h-3 text-[#F27D26] opacity-0 group-hover:opacity-100 transition-opacity" />
                   Home
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => handleNav('products')}
-                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
+                  className="hover:text-[#F27D26] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRight className="w-3 h-3 text-[#F27D26] opacity-0 group-hover:opacity-100 transition-opacity" />
                   Products
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => handleNav('manufacturing')}
-                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
+                  className="hover:text-[#F27D26] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRight className="w-3 h-3 text-[#F27D26] opacity-0 group-hover:opacity-100 transition-opacity" />
                   Manufacturing
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => handleNav('about')}
-                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
+                  className="hover:text-[#F27D26] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRight className="w-3 h-3 text-[#F27D26] opacity-0 group-hover:opacity-100 transition-opacity" />
                   About Us
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => handleNav('contact')}
-                  className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
+                  className="hover:text-[#F27D26] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowRight className="w-3 h-3 text-[#F27D26] opacity-0 group-hover:opacity-100 transition-opacity" />
                   Contact
                 </button>
               </li>
@@ -104,13 +104,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
             <div className="space-y-3">
               <div className="p-3 rounded-sm bg-zinc-900/70 border border-white/5">
                 <p className="text-xs font-bold text-white uppercase tracking-wider">Syed Hashim Hussain Rizvi</p>
-                <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
+                <p className="text-[11px] text-[#F27D26] font-semibold">Partner</p>
                 <p className="text-[11px] text-zinc-400 mt-1">Strategic Operations & Global Export Relations</p>
               </div>
 
               <div className="p-3 rounded-sm bg-zinc-900/70 border border-white/5">
                 <p className="text-xs font-bold text-white uppercase tracking-wider">Syed Masoom Raza</p>
-                <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
+                <p className="text-[11px] text-[#F27D26] font-semibold">Partner</p>
                 <p className="text-[11px] text-zinc-400 mt-1">Technical Manufacturing & Quality Engineering</p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
             </h4>
             <div className="space-y-2.5 text-xs">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#F27D26] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-white font-medium">Nazimabad, Karachi, Pakistan</p>
                   <p className="text-[11px] text-zinc-500">Hub of Headwear Manufacturing</p>
@@ -131,11 +131,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               </div>
 
               <div className="flex items-start gap-2.5">
-                <Mail className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                <Mail className="w-4 h-4 text-[#F27D26] shrink-0 mt-0.5" />
                 <div>
                   <a
                     href="mailto:auraglobalindustries@gmail.com"
-                    className="text-zinc-200 hover:text-[#D4AF37] transition-colors break-all"
+                    className="text-zinc-200 hover:text-[#F27D26] transition-colors break-all"
                   >
                     auraglobalindustries@gmail.com
                   </a>

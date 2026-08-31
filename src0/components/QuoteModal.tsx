@@ -149,7 +149,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 Manufacturing Quote Desk
               </h3>
 
-              <p className="text-[10px] text-[#D4AF37] font-mono">
+              <p className="text-[10px] text-[#F27D26] font-mono">
                 Nazimabad, Karachi, Pakistan
               </p>
             </div>
@@ -172,7 +172,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
             /* SUCCESS SCREEN */
             <div className="py-6 text-center space-y-4">
 
-              <div className="w-14 h-14 rounded-sm bg-[#D4AF37]/20 border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center mx-auto">
+              <div className="w-14 h-14 rounded-sm bg-[#F27D26]/20 border border-[#F27D26] text-[#F27D26] flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
 
@@ -189,7 +189,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <div className="text-[11px] text-zinc-400 pt-2 space-y-1 font-mono">
 
                 <p className="flex items-center justify-center gap-2">
-                  <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Mail className="w-3.5 h-3.5 text-[#F27D26]" />
 
                   Email received at:
 
@@ -199,7 +199,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </p>
 
                 <p className="flex items-center justify-center gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <MapPin className="w-3.5 h-3.5 text-[#F27D26]" />
 
                   Factory: Nazimabad, Karachi, Pakistan
                 </p>
@@ -240,7 +240,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Full Name{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    <span className="text-[#F27D26]">*</span>
                   </label>
 
                   <input
@@ -249,14 +249,14 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="John Doe / Brand Manager"
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-600"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white placeholder:text-zinc-600"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Email Address{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    <span className="text-[#F27D26]">*</span>
                   </label>
 
                   <input
@@ -265,7 +265,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="client@company.com"
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-600"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white placeholder:text-zinc-600"
                   />
                 </div>
 
@@ -277,7 +277,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Phone / WhatsApp{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    <span className="text-[#F27D26]">*</span>
                   </label>
 
                   <input
@@ -286,7 +286,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+92 300 1234567"
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-600"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white placeholder:text-zinc-600"
                   />
                 </div>
 
@@ -298,7 +298,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white"
                   >
                     {PRODUCT_CATEGORIES.map((cat) => (
                       <option
@@ -334,7 +334,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     onChange={(e) =>
                       setCustomizationType(e.target.value)
                     }
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white"
                   >
                     <option value="3D Puff Embroidery">
                       3D Puff Embroidery
@@ -370,7 +370,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <select
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
+                    className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white"
                   >
                     <option value="Sample / Prototype Run">
                       Sample / Prototype Run (10-50 pcs)
@@ -400,7 +400,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                   Project Details / Message{' '}
-                  <span className="text-[#D4AF37]">*</span>
+                  <span className="text-[#F27D26]">*</span>
                 </label>
 
                 <textarea
@@ -409,7 +409,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Describe your design, desired fabric (cotton twill, polyester mesh, corduroy), logo placement, closure preference..."
-                  className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-600 resize-none"
+                  className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white placeholder:text-zinc-600 resize-none"
                 />
               </div>
 
@@ -418,7 +418,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
                 <p className="text-[10px] text-zinc-500 font-mono">
                   DISPATCH:{' '}
-                  <span className="text-[#D4AF37]">
+                  <span className="text-[#F27D26]">
                     auraglobalindustries@gmail.com
                   </span>
                 </p>

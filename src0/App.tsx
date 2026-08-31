@@ -61,7 +61,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A0A0A] text-[#E5E5E5] font-sans antialiased selection:bg-[#D4AF37] selection:text-white relative">
+    <div className="min-h-screen flex flex-col bg-[#0A0A0A] text-[#E5E5E5] font-sans antialiased selection:bg-[#F27D26] selection:text-white relative">
 
       {/* Background Particles */}
       <ParticlesBackground id="particles-js" />

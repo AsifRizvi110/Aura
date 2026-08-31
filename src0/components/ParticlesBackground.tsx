@@ -39,10 +39,10 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
     }
 
     const nodeColors = [
-      '#D4AF37', // Vibrant Orange
-      '#E8CE8C', // Amber Gold
-      '#A8862A', // Deep Orange
-      '#EAD9A8'  // Warm Gold Light
+      '#f97316', // Vibrant Orange
+      '#fbbf24', // Amber Gold
+      '#ea580c', // Deep Orange
+      '#fdba74'  // Warm Gold Light
     ];
 
     let nodes: PlexusNode[] = [];
@@ -216,7 +216,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
                   ctx.lineTo(nodes[j].x, nodes[j].y);
                   ctx.lineTo(nodes[k].x, nodes[k].y);
                   ctx.closePath();
-                  ctx.fillStyle = `rgba(212, 175, 55, ${triAlpha})`;
+                  ctx.fillStyle = `rgba(249, 115, 22, ${triAlpha})`;
                   ctx.fill();
                 }
               }
@@ -240,7 +240,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
             ctx.beginPath();
             ctx.moveTo(n1.x, n1.y);
             ctx.lineTo(n2.x, n2.y);
-            ctx.strokeStyle = `rgba(212, 175, 55, ${alpha})`;
+            ctx.strokeStyle = `rgba(249, 115, 22, ${alpha})`;
             ctx.lineWidth = dist < linkDistance * 0.5 ? 1.2 : 0.8;
             ctx.stroke();
           }
@@ -257,7 +257,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
             ctx.beginPath();
             ctx.moveTo(n1.x, n1.y);
             ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(232, 206, 140, ${mAlpha})`;
+            ctx.strokeStyle = `rgba(251, 191, 36, ${mAlpha})`;
             ctx.lineWidth = 1.3;
             ctx.stroke();
 
@@ -286,16 +286,16 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
             node.y,
             currentRadius * 3.5
           );
-          haloGrad.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
-          haloGrad.addColorStop(0.5, 'rgba(232, 206, 140, 0.15)');
-          haloGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+          haloGrad.addColorStop(0, 'rgba(249, 115, 22, 0.4)');
+          haloGrad.addColorStop(0.5, 'rgba(251, 191, 36, 0.15)');
+          haloGrad.addColorStop(1, 'rgba(249, 115, 22, 0)');
           ctx.fillStyle = haloGrad;
           ctx.fill();
 
           // Subtle Outer Ring
           ctx.beginPath();
           ctx.arc(node.x, node.y, currentRadius * 2.2, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(232, 206, 140, 0.35)';
+          ctx.strokeStyle = 'rgba(253, 186, 116, 0.35)';
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }

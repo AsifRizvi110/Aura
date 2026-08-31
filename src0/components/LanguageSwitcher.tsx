@@ -47,7 +47,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         aria-haspopup="true"
         title="Switch Language / زبان تبدیل کریں"
       >
-        <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
+        <Globe className="w-3.5 h-3.5 text-[#F27D26]" />
         <span className="text-[11px] uppercase tracking-wider font-semibold">
           {currentLanguageOption.code.toUpperCase()}
         </span>

@@ -57,7 +57,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     <div id="products-page-root" className="pt-28 sm:pt-36 pb-20 space-y-10">
       {/* Page Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] uppercase tracking-[0.25em] font-semibold rounded-sm bg-[#0F0F0F]">
+        <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#F27D26]/30 text-[#F27D26] text-[10px] uppercase tracking-[0.25em] font-semibold rounded-sm bg-[#0F0F0F]">
           <Layers className="w-3.5 h-3.5" />
           <span>B2B Production Catalog</span>
         </div>
@@ -74,7 +74,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
 
         {/* OEM Customization Notice */}
         <div className="max-w-xl mx-auto p-3 rounded-sm bg-[#0F0F0F] border border-white/10 text-xs text-zinc-400 flex items-center justify-center gap-2">
-          <Info className="w-4 h-4 text-[#D4AF37] shrink-0" />
+          <Info className="w-4 h-4 text-[#F27D26] shrink-0" />
           <span>Every style is fully customizable with your brand's embroidery, printing, custom fabrics, and labels.</span>
         </div>
       </section>
@@ -90,7 +90,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 onClick={() => setSelectedCategory(tab.value)}
                 className={`px-3.5 py-1.5 rounded-sm text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === tab.value
-                    ? 'bg-[#D4AF37] text-white shadow-md'
+                    ? 'bg-[#F27D26] text-white shadow-md'
                     : 'text-zinc-400 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
@@ -107,7 +107,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search model or fabric..."
-              className="w-full pl-9 pr-4 py-2 rounded-sm bg-[#0A0A0A] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-500"
+              className="w-full pl-9 pr-4 py-2 rounded-sm bg-[#0A0A0A] border border-white/15 focus:border-[#F27D26] focus:outline-none text-xs text-white placeholder:text-zinc-500"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
         {/* Results Counter */}
         <div className="flex items-center justify-between text-xs text-zinc-500 px-2 font-mono">
           <span>SHOWING <strong className="text-white">{filteredProducts.length}</strong> CAP MODELS</span>
-          <span className="text-[#D4AF37]">DIRECT FACTORY PRICING UPON REQUEST</span>
+          <span className="text-[#F27D26]">DIRECT FACTORY PRICING UPON REQUEST</span>
         </div>
 
         {/* Product Grid */}
@@ -127,7 +127,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                 setSelectedCategory('all');
                 setSearchQuery('');
               }}
-              className="text-xs text-[#D4AF37] hover:underline uppercase font-bold tracking-wider cursor-pointer"
+              className="text-xs text-[#F27D26] hover:underline uppercase font-bold tracking-wider cursor-pointer"
             >
               Reset all filters
             </button>
@@ -151,14 +151,14 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
 
                     {/* Category Pill */}
-                    <span className="absolute top-2.5 left-2.5 text-[10px] uppercase font-semibold text-[#D4AF37] bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-sm border border-white/10">
+                    <span className="absolute top-2.5 left-2.5 text-[10px] uppercase font-semibold text-[#F27D26] bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-sm border border-white/10">
                       {product.category}
                     </span>
 
                     {/* Quick View Button */}
                     <button
                       onClick={() => onSelectProductModal(product)}
-                      className="absolute bottom-2.5 right-2.5 p-2 rounded-sm bg-black/90 text-white hover:text-[#D4AF37] border border-white/10 backdrop-blur-md text-[11px] flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity cursor-pointer uppercase font-semibold"
+                      className="absolute bottom-2.5 right-2.5 p-2 rounded-sm bg-black/90 text-white hover:text-[#F27D26] border border-white/10 backdrop-blur-md text-[11px] flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity cursor-pointer uppercase font-semibold"
                       title="View Cap Specifications"
                     >
                       <Eye className="w-3.5 h-3.5" />
@@ -169,7 +169,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   {/* Product Details Content */}
                   <div className="p-4 space-y-3">
                     <div>
-                      <h3 className="font-heading text-sm font-bold text-white uppercase tracking-wider group-hover:text-[#D4AF37] transition-colors">
+                      <h3 className="font-heading text-sm font-bold text-white uppercase tracking-wider group-hover:text-[#F27D26] transition-colors">
                         {product.name}
                       </h3>
                       <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2 mt-1">
@@ -204,7 +204,7 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                             key={i}
                             className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-sm bg-white/5 text-zinc-300 border border-white/10"
                           >
-                            <Check className="w-2.5 h-2.5 text-[#D4AF37]" />
+                            <Check className="w-2.5 h-2.5 text-[#F27D26]" />
                             {cust}
                           </span>
                         ))}

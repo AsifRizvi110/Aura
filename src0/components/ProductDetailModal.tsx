@@ -27,7 +27,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-2.5 py-1 rounded-sm border border-[#D4AF37]/20 font-mono">
+            <span className="text-[10px] uppercase tracking-widest text-[#F27D26] font-bold bg-[#F27D26]/10 px-2.5 py-1 rounded-sm border border-[#F27D26]/20 font-mono">
               {product.category}
             </span>
             <span className="text-[11px] text-zinc-500 font-mono uppercase">• OEM SPECIFICATION</span>
@@ -55,7 +55,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
               <div className="absolute bottom-3 left-3 right-3 text-xs text-zinc-300 bg-black/80 backdrop-blur-sm p-2.5 rounded-sm border border-white/10">
-                <span className="text-[#D4AF37] font-bold uppercase text-[10px] block">Factory Specification:</span>
+                <span className="text-[#F27D26] font-bold uppercase text-[10px] block">Factory Specification:</span>
                 <span className="text-[11px] text-zinc-400">Available in custom Pantone colors & client trims.</span>
               </div>
             </div>
@@ -94,13 +94,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Customization Options */}
               <div>
                 <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Supported Customizations
+                  <Sparkles className="w-3 h-3 text-[#F27D26]" /> Supported Customizations
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {product.customization.map((opt, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-sm bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 font-medium"
+                      className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-sm bg-[#F27D26]/10 text-[#F27D26] border border-[#F27D26]/20 font-medium"
                     >
                       <Check className="w-3 h-3" /> {opt}
                     </span>
@@ -110,7 +110,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Factory Assurance */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 pt-1">
-                <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-[#F27D26] shrink-0" />
                 <span>Manufactured in Nazimabad, Karachi, Pakistan with full QA inspection.</span>
               </div>
             </div>

@@ -494,7 +494,7 @@ export const CapCustomizer: React.FC = () => {
       {/* HEADER */}
       <div className="text-center max-w-3xl mx-auto mb-6">
         <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight uppercase">
-          Design Your Signature <span className="text-[#D4AF37]">Cap in 3D</span>
+          Design Your Signature <span className="text-[#F27D26]">Cap in 3D</span>
         </h1>
         <p className="text-neutral-400 text-xs sm:text-sm mt-3 max-w-lg mx-auto">
           Upload your logo, pick custom materials & preview 360° in real-time.
@@ -627,7 +627,7 @@ export const CapCustomizer: React.FC = () => {
         <main className="relative flex-1 min-h-[600px] h-[720px] bg-[#141618]/70 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center">
           <div className="absolute top-5 left-5 z-30">
             <div className="bg-[#202223]/90 text-white rounded-xl px-4 py-2 flex items-center gap-2.5 border border-white/10 shadow-xl">
-              <Box size={18} className="text-[#D4AF37]" />
+              <Box size={18} className="text-[#F27D26]" />
               <div>
                 <p className="text-[9px] uppercase text-neutral-400">Interactive</p>
                 <p className="text-xs font-bold">360° Studio</p>
@@ -638,7 +638,7 @@ export const CapCustomizer: React.FC = () => {
           {loading && (
             <div className="absolute inset-0 z-40 flex items-center justify-center bg-[#141618]/90">
               <div className="text-center">
-                <div className="w-10 h-10 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <div className="w-10 h-10 border-4 border-[#F27D26] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                 <p className="text-xs text-neutral-300 font-mono tracking-wider uppercase">Loading 3D Cap...</p>
               </div>
             </div>
@@ -654,7 +654,7 @@ export const CapCustomizer: React.FC = () => {
                 onClick={() => setCameraView(item.id)}
                 className={`w-[65px] h-[65px] rounded-xl transition flex flex-col items-center justify-center gap-1 ${
                   view === item.id
-                    ? "bg-[#D4AF37] text-white shadow-[0_0_15px_rgba(242,125,38,0.4)]"
+                    ? "bg-[#F27D26] text-white shadow-[0_0_15px_rgba(242,125,38,0.4)]"
                     : "bg-white/5 text-neutral-300 hover:bg-white/15"
                 }`}
               >
@@ -667,7 +667,7 @@ export const CapCustomizer: React.FC = () => {
           {/* INSTRUCTION */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
             <div className="px-6 py-2.5 bg-black/70 backdrop-blur-md text-white rounded-full text-xs border border-white/10 shadow-2xl whitespace-nowrap">
-              Drag to rotate <span className="mx-2 text-[#D4AF37]">•</span> Scroll to zoom <span className="mx-2 text-[#D4AF37]">•</span> Right click to pan
+              Drag to rotate <span className="mx-2 text-[#F27D26]">•</span> Scroll to zoom <span className="mx-2 text-[#F27D26]">•</span> Right click to pan
             </div>
           </div>
         </main>
