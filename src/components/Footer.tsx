@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PageId } from '../types';
 import { AuraLogo } from './AuraLogo';
 import { SocialLinks } from './SocialLinks';
@@ -7,13 +7,38 @@ import {
   MapPin,
   ArrowRight,
   ShieldCheck,
-  Globe2
+  Globe2,
+  User
 } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (page: PageId) => void;
   onOpenQuoteModal: () => void;
 }
+
+// Partner Profile Image Component with Graceful Fallback
+const PartnerAvatar: React.FC<{ src: string; alt: string; initials: string }> = ({ src, alt, initials }) => {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-[#D4AF37]/40 bg-zinc-900 shadow-md flex items-center justify-center group-hover:border-[#D4AF37] transition-all">
+      {!hasError ? (
+        <img
+          src={src}
+          alt={alt}
+          onError={() => setHasError(true)}
+          className="w-full h-full object-cover object-top"
+          loading="lazy"
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-[#D4AF37] font-bold text-xs tracking-widest font-mono">
+          {initials}
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+};
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) => {
   const handleNav = (page: PageId) => {
@@ -96,22 +121,46 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
             </ul>
           </div>
 
-          {/* Partners Information */}
+          {/* Partners Information with Images */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white font-heading">
               Executive Partners
             </h4>
             <div className="space-y-3">
-              <div className="p-3 rounded-sm bg-zinc-900/70 border border-white/5">
-                <p className="text-xs font-bold text-white uppercase tracking-wider">Syed Hashim Hussain Rizvi</p>
-                <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
-                <p className="text-[11px] text-zinc-400 mt-1">Strategic Operations & Global Export Relations</p>
+              {/* Syed Hashim Hussain Rizvi */}
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/5 hover:border-[#D4AF37]/30 transition-all flex items-center gap-3.5 group">
+                <PartnerAvatar
+                  src="/images/hashim.jpg"
+                  alt="Syed Hashim Hussain Rizvi"
+                  initials="HR"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-white uppercase tracking-wider truncate">
+                    Syed Hashim Hussain Rizvi
+                  </p>
+                  <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
+                  <p className="text-[10px] text-zinc-400 mt-0.5 leading-tight line-clamp-2">
+                    Strategic Operations & Global Export Relations
+                  </p>
+                </div>
               </div>
 
-              <div className="p-3 rounded-sm bg-zinc-900/70 border border-white/5">
-                <p className="text-xs font-bold text-white uppercase tracking-wider">Syed Masoom Raza</p>
-                <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
-                <p className="text-[11px] text-zinc-400 mt-1">Technical Manufacturing & Quality Engineering</p>
+              {/* Syed Masoom Raza */}
+              <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/5 hover:border-[#D4AF37]/30 transition-all flex items-center gap-3.5 group">
+                <PartnerAvatar
+                  src="/images/masoom.jpeg"
+                  alt="Syed Masoom Raza"
+                  initials="MR"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-white uppercase tracking-wider truncate">
+                    Syed Masoom Raza
+                  </p>
+                  <p className="text-[11px] text-[#D4AF37] font-semibold">Partner</p>
+                  <p className="text-[10px] text-zinc-400 mt-0.5 leading-tight line-clamp-2">
+                    Technical Manufacturing & Quality Engineering
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -169,7 +218,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-zinc-500">
           <p>© 2026 Aura Global Industries. All Rights Reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="mailto:auraglobalindustries@gmail.com" className="hover:text-white transition-colors">auraglobalindustries@gmail.com</a>
+            <a href="mailto:auraglobalindustries@gmail.com" className="hover:text-white transition-colors">
+              auraglobalindustries@gmail.com
+            </a>
             <span>•</span>
             <span>Nazimabad, Karachi, Pakistan</span>
           </div>
@@ -178,4 +229,3 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
     </footer>
   );
 };
-
