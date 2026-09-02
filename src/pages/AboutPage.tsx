@@ -202,7 +202,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
             <span>Executive Leadership</span>
           </div>
 
-          <h2 className="font-heading text-2xl sm:text-4xl font-extrabold text-white uppercase tracking-tight">
+          <h2 className="font-heading text-2xl sm:text-4xl font-extrabold text-white uppercase tracking-tight ">
             Our Partners
           </h2>
 
@@ -212,7 +212,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
         </div>
 
         {/* 2 Partner Profile Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto ">
           {COMPANY_INFO.partners.map((partner, idx) => (
             <div
               key={idx}
@@ -221,7 +221,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
               <div className="flex items-center gap-4">
 
                 {/* Partner Image */}
-                <div className="w-14 h-14 rounded-sm overflow-hidden bg-[#141414] border border-[#D4AF37]/30 shrink-0">
+                <div className="w-14 h-14 rounded-sm overflow-hidden bg-[#141414] border border-[#D4AF37]/30 shrink-0 ">
                   <img
                     src={partner.imageUrl}
                     alt={partner.imageAlt}
@@ -230,9 +230,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
                 </div>
 
                 <div>
-                  <h3 className="font-heading text-base sm:text-lg font-bold text-white uppercase tracking-wider group-hover:text-[#D4AF37] transition-colors">
-                    {partner.name}
-                  </h3>
+                <h3 className="font-heading text-sm sm:text-base font-bold text-white uppercase tracking-wider group-hover:text-[#D4AF37] transition-colors">
+  {partner.name}
+</h3>
 
                   <p className="text-[11px] font-bold text-[#D4AF37] tracking-wider uppercase font-mono">
                     {partner.role}
