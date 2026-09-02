@@ -29,9 +29,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // ✅ Fixed Type Definition & Labels
   const navItems: { id: PageId; labelKey: string; defaultLabel: string }[] = [
     { id: 'home', labelKey: 'nav.home', defaultLabel: 'Home' },
     { id: 'products', labelKey: 'nav.products', defaultLabel: 'Products' },
+    { id: 'tactical', labelKey: 'nav.tactical', defaultLabel: 'Tactical Headwear' }, // ✅ Fixed
     { id: 'manufacturing', labelKey: 'nav.manufacturing', defaultLabel: 'Manufacturing' },
     { id: 'about', labelKey: 'nav.about', defaultLabel: 'About' },
     { id: 'contact', labelKey: 'nav.contact', defaultLabel: 'Contact' }
@@ -86,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => handleNavClick('home')}
         />
 
-        {/* Desktop Navigation Links (Sleek uppercase tracking-widest) */}
+        {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-xs font-semibold uppercase tracking-widest">
           {navItems.map((item) => {
             const isActive = currentPage === item.id;

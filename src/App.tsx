@@ -20,6 +20,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ManufacturingPage } from './pages/ManufacturingPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
+import { TacticalHeadwearPage } from './pages/TacticalHeadwearPage';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
@@ -96,6 +97,13 @@ function AppContent() {
             initialCategoryFilter={selectedCategoryFilter}
             onOpenQuoteModal={handleOpenQuoteModal}
             onSelectProductModal={handleOpenProductDetail}
+          />
+        )}
+
+        {/* ===================== TACTICAL HEADWEAR PAGE ===================== */}
+        {currentPage === 'tactical' && (
+          <TacticalHeadwearPage
+            onOpenQuoteModal={handleOpenQuoteModal}
           />
         )}
 
