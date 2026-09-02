@@ -157,10 +157,10 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
   const [activeModalItem, setActiveModalItem] = useState<TacticalItem | null>(null);
 
   // =========================================================
-  // AUTOMATIC SEO META & JSON-LD SCHEMA INJECTION
+  // AUTOMATIC SEO META, CANONICAL & JSON-LD SCHEMA INJECTION
   // =========================================================
   useEffect(() => {
-    // 1. Dynamic Page Title for Search Engines
+    // 1. Dynamic Page Title
     const originalTitle = document.title;
     document.title = 'Tactical, Military & Security Guard Caps Manufacturer | Aura Global Industries';
 
@@ -170,11 +170,22 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        'Bulk manufacturer & exporter of tactical caps, military boonie hats, cadet college drill caps, and private security guard headwear in Karachi, Pakistan. High-density embroidery & ripstop fabrics.'
+        'Bulk manufacturer & exporter of tactical caps, military boonie hats, cadet college drill caps, and private security guard headwear in Karachi, Pakistan.'
       );
     }
 
-    // 3. Structured JSON-LD Schema for Google Rich Snippets
+    // 3. Canonical URL Tag
+    let canonical = document.querySelector("link[rel='canonical']") as HTMLLinkElement | null;
+    let createdCanonical = false;
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+      createdCanonical = true;
+    }
+    canonical.setAttribute('href', window.location.href);
+
+    // 4. Structured JSON-LD Schema
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'tactical-schema-jsonld';
@@ -191,13 +202,7 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
           category: item.category,
           description: item.description,
           image: `https://auraglobalindustries.com${item.imageUrl}`,
-          material: item.material,
-          offers: {
-            '@type': 'AggregateOffer',
-            priceCurrency: 'USD',
-            price: 'Custom B2B Quotation',
-            availability: 'https://schema.org/InStock'
-          }
+          material: item.material
         }
       }))
     });
@@ -208,6 +213,9 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
       if (metaDesc && originalDesc) metaDesc.setAttribute('content', originalDesc);
       const existingScript = document.getElementById('tactical-schema-jsonld');
       if (existingScript) existingScript.remove();
+      if (createdCanonical && canonical) {
+        canonical.remove();
+      }
     };
   }, []);
 
@@ -231,14 +239,13 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
 
   return (
     <div id="tactical-page-root" className="pt-28 sm:pt-36 pb-20 space-y-12">
-      {/* 1. HERO SECTION (H1 + Semantic B2B Description) */}
+      {/* 1. HERO SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] uppercase tracking-[0.25em] font-semibold rounded-sm bg-[#0F0F0F]">
           <Crosshair className="w-3.5 h-3.5 text-[#D4AF37]" />
           <span>TACTICAL, SECURITY & CADET UNIFORM HEADWEAR</span>
         </div>
 
-        {/* Primary SEO Heading */}
         <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white uppercase tracking-tight">
           Tactical, Security & <span className="text-[#D4AF37]">Cadet Headwear</span>
         </h1>
@@ -247,7 +254,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
           Contract manufacturing for military units, private security companies, residential watchmen fleets, cadet colleges, and enforcement agencies across Pakistan and global export markets. Manufactured with reinforced ripstop, regimental metallic crests, and night-patrol reflective trims.
         </p>
 
-        {/* Badges Bar */}
         <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-900 border border-white/10 text-[10px] uppercase tracking-wider text-zinc-300 rounded-sm">
             <Shield className="w-3.5 h-3.5 text-[#D4AF37]" /> Military Ripstop & Camo
@@ -267,7 +273,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
       {/* 2. FILTER & SEARCH SECTION */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="p-3 sm:p-4 rounded-sm bg-[#0F0F0F] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          {/* Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
             {filterTabs.map((tab) => (
               <button
@@ -284,7 +289,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
             ))}
           </div>
 
-          {/* Search Bar */}
           <div className="relative w-full md:w-72">
             <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -298,13 +302,12 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
           </div>
         </div>
 
-        {/* Counter */}
         <div className="flex items-center justify-between text-xs text-zinc-500 px-2 font-mono">
           <span>SHOWING <strong className="text-white">{filteredItems.length}</strong> MIL-SPEC & UNIFORM DESIGNS</span>
           <span className="text-[#D4AF37]">CUSTOM CONTRACT MANUFACTURING (MOQ: 300 PCS)</span>
         </div>
 
-        {/* 3. PRODUCT CARDS GRID (Semantic Product Items) */}
+        {/* 3. PRODUCT CARDS GRID */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <article
@@ -314,19 +317,21 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
               itemType="https://schema.org/Product"
             >
               <div>
-                {/* Photo with SEO Optimized Alt Tags */}
-                <div className="relative aspect-[4/3] bg-black overflow-hidden">
+                {/* Optimized Picture Container */}
+                <div className="relative aspect-[4/3] bg-zinc-950 overflow-hidden">
                   <img
                     src={item.imageUrl}
-                    alt={`${item.name} - ${item.category} manufactured by Aura Global Industries Karachi`}
+                    alt={`${item.name} - ${item.category}`}
                     loading="lazy"
+                    decoding="async"
+                    width={800}
+                    height={600}
                     itemProp="image"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 will-change-transform"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-90 pointer-events-none" />
 
-                  {/* Category & Sector Pills */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-1">
+                  <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
                     <span className="text-[10px] uppercase font-bold text-[#D4AF37] bg-black/90 backdrop-blur-md px-2.5 py-0.5 rounded-sm border border-white/10 w-fit">
                       {item.category}
                     </span>
@@ -335,10 +340,9 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
                     </span>
                   </div>
 
-                  {/* Specs Quick Button */}
                   <button
                     onClick={() => setActiveModalItem(item)}
-                    className="absolute bottom-3 right-3 p-2 rounded-sm bg-black/85 text-white hover:text-[#D4AF37] border border-white/10 backdrop-blur-md text-[11px] flex items-center gap-1.5 cursor-pointer uppercase font-semibold"
+                    className="absolute bottom-3 right-3 p-2 rounded-sm bg-black/85 text-white hover:text-[#D4AF37] border border-white/10 backdrop-blur-md text-[11px] flex items-center gap-1.5 cursor-pointer uppercase font-semibold z-10"
                     title={`View technical specifications for ${item.name}`}
                   >
                     <Eye className="w-3.5 h-3.5" />
@@ -346,7 +350,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
                   </button>
                 </div>
 
-                {/* Details */}
                 <div className="p-5 space-y-3">
                   <div>
                     <h2 itemProp="name" className="font-heading text-base font-bold text-white uppercase tracking-wider group-hover:text-[#D4AF37] transition-colors">
@@ -357,7 +360,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
                     </p>
                   </div>
 
-                  {/* Specs Box */}
                   <div className="space-y-1.5 text-xs bg-[#141414] p-3 rounded-sm border border-white/5 font-mono">
                     <div className="flex justify-between">
                       <span className="text-zinc-500 text-[11px]">TEXTILE:</span>
@@ -373,7 +375,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
                     </div>
                   </div>
 
-                  {/* Tactical Specs Chips */}
                   <div className="space-y-1.5 pt-1">
                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block">
                       Key Highlights:
@@ -393,7 +394,6 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
                 </div>
               </div>
 
-              {/* Action Button */}
               <div className="p-5 pt-0">
                 <button
                   onClick={() => onOpenQuoteModal(`Uniform/Tactical: ${item.name}`)}
@@ -408,7 +408,7 @@ export const TacticalHeadwearPage: React.FC<TacticalHeadwearPageProps> = ({ onOp
         </div>
       </section>
 
-      {/* 4. SECTOR CAPABILITIES TABLE (Semantic H2) */}
+      {/* 4. SECTOR CAPABILITIES TABLE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="p-8 rounded-sm bg-[#0F0F0F] border border-white/10 space-y-6">
           <div className="text-center sm:text-left space-y-2">
