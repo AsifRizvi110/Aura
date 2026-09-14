@@ -9,9 +9,9 @@ export default async function handler(req, res) {
   const { name, email, message, product, quantity } = req.body;
 
   try {
-    // 1. Gemini AI Setup (Updated to current active model)
+    // 1. Gemini AI Setup (Updated to gemini-3.6-flash)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
     const prompt = `You are a representative of Aura Global Industries, a premier headwear & apparel manufacturing company based in Nazimabad, Karachi, Pakistan.
 Write a concise, warm, and professional email reply to ${name} acknowledging their inquiry about ${product || 'custom caps'} (Quantity: ${quantity || 'N/A'}).
