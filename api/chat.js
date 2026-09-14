@@ -35,8 +35,8 @@ Assure them that our sales team is reviewing their requirements and will reach o
 
     await transporter.sendMail({
       from: `"Aura Global Industries" <${process.env.EMAIL_USER}>`,
-      to: email, // Form me jo email enter hui usko reply jayega
-      cc: ownerEmail, // Aap ko CC copy milegi
+      to: email,
+      cc: ownerEmail,
       subject: `Quote Request Confirmation - Aura Global Industries`,
       text: aiReply,
     });
