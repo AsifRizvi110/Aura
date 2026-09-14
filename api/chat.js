@@ -9,13 +9,14 @@ export default async function handler(req, res) {
   const { name, email, message, product, quantity } = req.body;
 
   try {
-    // 1. Gemini AI Response Generation
+    // 1. Gemini AI Setup (Updated to current active model)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `You are a representative of Aura Global Industries. 
-    Write a professional reply to ${name} who is inquiring about ${product || 'custom caps'} (Quantity: ${quantity || 'N/A'}). 
-    User message: ${message || 'Requesting quote details.'}`;
+    const prompt = `You are a representative of Aura Global Industries, a premier headwear & apparel manufacturing company based in Nazimabad, Karachi, Pakistan.
+Write a concise, warm, and professional email reply to ${name} acknowledging their inquiry about ${product || 'custom caps'} (Quantity: ${quantity || 'N/A'}).
+User message: "${message || 'Requesting quote details.'}"
+Assure them that our sales team is reviewing their requirements and will reach out with a detailed price breakdown shortly.`;
 
     const aiResult = await model.generateContent(prompt);
     const aiReply = aiResult.response.text();
@@ -40,9 +41,9 @@ export default async function handler(req, res) {
     // 4. Notification Email to Owner
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: process.env.OWNER_EMAIL,
-      subject: `New Lead: ${name}`,
-      text: `New Inquiry Received:\nName: ${name}\nEmail: ${email}\nProduct: ${product}\nQuantity: ${quantity}\nMessage: ${message}`,
+      to: process.env.OWNER_EMAIL || process.env.EMAIL_USER,
+      subject: `New Lead: ${name} - ${product || 'Cap Inquiry'}`,
+      text: `New Inquiry Received:\n\nName: ${name}\nEmail: ${email}\nProduct: ${product}\nQuantity: ${quantity}\nMessage: ${message}\n\nAI Reply Sent:\n${aiReply}`,
     });
 
     return res.status(200).json({ success: true, reply: aiReply });
