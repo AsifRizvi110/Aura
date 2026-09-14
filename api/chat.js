@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const { name, email, message, product, quantity } = req.body;
 
   try {
-    // 1. Gemini AI Setup (Updated to gemini-3.6-flash)
+    // 1. Gemini AI Setup
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
 
@@ -30,20 +30,15 @@ Assure them that our sales team is reviewing their requirements and will reach o
       },
     });
 
-    // 3. Email to Customer
+    // 3. Single Email Call: Customer as 'TO', Owner as 'CC'
+    const ownerEmail = process.env.OWNER_EMAIL || process.env.EMAIL_USER;
+
     await transporter.sendMail({
       from: `"Aura Global Industries" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Thank you for contacting Aura Global Industries',
+      to: email, // Form me jo email enter hui usko reply jayega
+      cc: ownerEmail, // Aap ko CC copy milegi
+      subject: `Quote Request Confirmation - Aura Global Industries`,
       text: aiReply,
-    });
-
-    // 4. Notification Email to Owner
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.OWNER_EMAIL || process.env.EMAIL_USER,
-      subject: `New Lead: ${name} - ${product || 'Cap Inquiry'}`,
-      text: `New Inquiry Received:\n\nName: ${name}\nEmail: ${email}\nProduct: ${product}\nQuantity: ${quantity}\nMessage: ${message}\n\nAI Reply Sent:\n${aiReply}`,
     });
 
     return res.status(200).json({ success: true, reply: aiReply });
