@@ -6,22 +6,21 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, phone, category, customization, quantity, message } = req.body;
+  const { name, email, message, product, quantity } = req.body;
 
   try {
-    // 1. Initialize Gemini AI (Free Model)
+    // 1. Gemini AI Response Generation
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const prompt = `You are an AI sales agent for Aura Global Industries (custom headwear manufacturer in Karachi, Pakistan). 
-    A client named ${name} requested a quote for ${category} (Quantity: ${quantity}, Customization: ${customization}). 
-    Details: ${message}. 
-    Write a short, highly professional response acknowledging their quote request and letting them know our sales team will follow up shortly with pricing.`;
+    const prompt = `You are a representative of Aura Global Industries. 
+    Write a professional reply to ${name} who is inquiring about ${product || 'custom caps'} (Quantity: ${quantity || 'N/A'}). 
+    User message: ${message || 'Requesting quote details.'}`;
 
     const aiResult = await model.generateContent(prompt);
     const aiReply = aiResult.response.text();
 
-    // 2. Setup Free Email Transporter (Nodemailer)
+    // 2. Nodemailer Transporter Setup
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -30,31 +29,25 @@ export default async function handler(req, res) {
       },
     });
 
-    // Email to Owner
+    // 3. Email to Customer
+    await transporter.sendMail({
+      from: `"Aura Global Industries" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Thank you for contacting Aura Global Industries',
+      text: aiReply,
+    });
+
+    // 4. Notification Email to Owner
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.OWNER_EMAIL,
-      subject: `New Lead: ${name} (${category})`,
-      html: `<h3>New Lead Received</h3>
-             <p><b>Name:</b> ${name}</p>
-             <p><b>Email:</b> ${email}</p>
-             <p><b>Phone:</b> ${phone}</p>
-             <p><b>Category:</b> ${category}</p>
-             <p><b>Quantity:</b> ${quantity}</p>
-             <p><b>Message:</b> ${message}</p>`,
-    });
-
-    // Confirmation Email to Client
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: `Quote Request Received - Aura Global Industries`,
-      text: aiReply,
+      subject: `New Lead: ${name}`,
+      text: `New Inquiry Received:\nName: ${name}\nEmail: ${email}\nProduct: ${product}\nQuantity: ${quantity}\nMessage: ${message}`,
     });
 
     return res.status(200).json({ success: true, reply: aiReply });
   } catch (error) {
-    console.error('AI/Email Error:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('API Error:', error);
+    return res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }

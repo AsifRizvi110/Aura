@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import emailjs from '@emailjs/browser';
 import { X, CheckCircle2, Send, Mail, MapPin } from 'lucide-react';
 import { PRODUCT_CATEGORIES } from '../data/companyData';
 import { useToast } from '../context/ToastContext';
@@ -60,42 +59,34 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      /*
-       * IMPORTANT:
-       * Replace these 3 values with your own EmailJS credentials.
-       */
+      // Send request to Vercel Serverless Function (/api/chat) for Gemini AI response
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          phone: phone,
+          product: selectedCategory,
+          customization: customizationType,
+          quantity: quantity,
+          message: message,
+        }),
+      });
 
-      const SERVICE_ID = 'service_vili4jn';
-      const TEMPLATE_ID = 'template_dyz19fg';
-      const PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O';
+      const data = await response.json();
 
-      const templateParams = {
-        full_name: fullName,
-        email: email,
-        phone: phone,
-        category: selectedCategory,
-        customization: customizationType,
-        quantity: quantity,
-        message: message
-      };
-
-      /*
-       * Send email directly through EmailJS
-       */
-      await emailjs.send(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        templateParams,
-        {
-          publicKey: PUBLIC_KEY
-        }
-      );
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send request');
+      }
 
       // Success state
       setIsSubmitting(false);
       setSubmitted(true);
 
-      // Existing toast notification
+      // Trigger toast notification
       showQuoteSuccessToast({
         name: fullName,
         product: selectedCategory,
@@ -103,13 +94,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         email: email
       });
 
-    } catch (error) {
-      console.error('EmailJS Error:', error);
-
+    } catch (error: any) {
+      console.error('API Route Error:', error);
       setIsSubmitting(false);
-
       setErrorMsg(
-        'Unable to send your quote request right now. Please try again or contact us directly by email.'
+        error.message || 'Unable to send your quote request right now. Please try again.'
       );
     }
   };
@@ -183,7 +172,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <p className="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed bg-[#141414] p-4 rounded-sm border border-white/10">
                 Thank you for contacting Aura Global Industries.
                 Your quote request has been successfully sent to our
-                manufacturing team.
+                manufacturing team. An automated AI response has been sent to your email.
               </p>
 
               <div className="text-[11px] text-zinc-400 pt-2 space-y-1 font-mono">
@@ -430,7 +419,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 >
 
                   {isSubmitting ? (
-                    <span>Sending...</span>
+                    <span>Processing AI Reply...</span>
                   ) : (
                     <>
                       <span>Submit Quote Request</span>
