@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
@@ -14,20 +13,38 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Gemini AI Setup
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
-    // Updated stable model identifier
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-    const prompt = `You are a representative of Aura Global Industries, a premier headwear & apparel manufacturing company based in Nazimabad, Karachi, Pakistan.
+    // 1. Gemini AI Direct REST API Call (Gemini 3.6 Flash)
+    const promptText = `You are a representative of Aura Global Industries, a premier headwear & apparel manufacturing company based in Nazimabad, Karachi, Pakistan.
 Write a concise, warm, and professional confirmation email reply to ${name} acknowledging their inquiry about ${product || 'Custom Caps'} (Quantity: ${quantity || 'N/A'}, Customization: ${customization || 'N/A'}).
 User message: "${message || 'Requesting quote details.'}"
 Assure them that our sales team is reviewing their requirements and will reach out with a detailed price breakdown within 24 hours. Keep it under 150 words.`;
 
-    const aiResult = await model.generateContent(prompt);
-    const aiResponse = await aiResult.response;
-    const aiReply = aiResponse.text();
+    const apiKey = process.env.GEMINI_API_KEY;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+
+    const aiResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: promptText }],
+          },
+        ],
+      }),
+    });
+
+    const aiData = await aiResponse.json();
+
+    if (!aiResponse.ok) {
+      throw new Error(aiData.error?.message || 'Failed to generate content from Gemini API');
+    }
+
+    const aiReply =
+      aiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'Thank you for reaching out to Aura Global Industries. Our team will review your quote request and get back to you shortly.';
 
     // 2. Nodemailer Transporter Setup
     const transporter = nodemailer.createTransport({
