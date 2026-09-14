@@ -23,8 +23,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
   const [selectedCategory, setSelectedCategory] = useState(
     preselectedProduct || 'Baseball Caps'
   );
-  const [customizationType, setCustomizationType] =
-    useState('3D Puff Embroidery');
+  const [customizationType, setCustomizationType] = useState('3D Puff Embroidery');
   const [quantity, setQuantity] = useState('500 - 1,000 pcs');
   const [message, setMessage] = useState('');
 
@@ -59,7 +58,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // Send request to Vercel Serverless Function (/api/chat) for Gemini AI response
+      // Send dynamic form input to backend API
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -67,7 +66,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         },
         body: JSON.stringify({
           name: fullName,
-          email: email,
+          email: email.trim(), // Form input value
           phone: phone,
           product: selectedCategory,
           customization: customizationType,
@@ -172,7 +171,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <p className="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed bg-[#141414] p-4 rounded-sm border border-white/10">
                 Thank you for contacting Aura Global Industries.
                 Your quote request has been successfully sent to our
-                manufacturing team. An automated AI response has been sent to your email.
+                manufacturing team. An automated AI response has been sent to <strong className="text-[#D4AF37]">{email}</strong>.
               </p>
 
               <div className="text-[11px] text-zinc-400 pt-2 space-y-1 font-mono">
