@@ -12,11 +12,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Gemini AI Direct REST API Call
-    const promptText = `You are a representative of Aura Global Industries, a premier headwear & apparel manufacturing company based in Nazimabad, Karachi, Pakistan.
-Write a concise, warm, and professional confirmation email reply to ${name} acknowledging their inquiry about ${product || 'Custom Caps'} (Quantity: ${quantity || 'N/A'}, Customization: ${customization || 'N/A'}).
-User message: "${message || 'Requesting quote details.'}"
-Assure them that our sales team is reviewing their requirements and will reach out with a detailed price breakdown within 24 hours. Keep it under 150 words.`;
+    // 1. Multi-Language Adaptive Gemini Prompt Setup
+    const promptText = `You are a professional customer support representative for Aura Global Industries, a top-tier headwear & apparel manufacturer based in Nazimabad, Karachi, Pakistan.
+
+CRITICAL INSTRUCTION FOR LANGUAGE:
+1. Detect the language used in the user's message below: "${message || 'Requesting quote details.'}".
+2. Write the ENTIRE reply in the SAME LANGUAGE as the user's message (e.g., if the message is in Urdu, reply in Urdu; if in Roman Urdu, reply in Roman Urdu; if in Spanish, reply in Spanish; if in English, reply in English).
+
+EMAIL CONTENT REQUIREMENTS:
+- Address the client by name: ${name}
+- Acknowledge their inquiry regarding ${product || 'Custom Caps'} (Quantity: ${quantity || 'N/A'}, Customization: ${customization || 'N/A'}).
+- Reassure them that our sales team is analyzing their design and specifications, and will send a detailed custom quotation within 24 hours.
+- Keep the response warm, professional, concise, and under 150 words.`;
 
     const apiKey = process.env.GEMINI_API_KEY;
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
@@ -39,7 +46,7 @@ Assure them that our sales team is reviewing their requirements and will reach o
       aiData.candidates?.[0]?.content?.parts?.[0]?.text ||
       'Thank you for reaching out to Aura Global Industries. Our team will review your quote request and get back to you shortly.';
 
-    // 2. Nodemailer Setup
+    // 2. Nodemailer Transporter Setup
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -59,21 +66,24 @@ Assure them that our sales team is reviewing their requirements and will reach o
         </div>
         <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
         <div style="font-size: 12px; color: #666; background-color: #f9f9f9; padding: 12px; border-radius: 4px;">
-          <strong style="color: #0a0a0a;">Inquiry Details Submitted:</strong><br />
-          <strong>Name:</strong> ${name}<br />
+          <strong style="color: #0a0a0a;">Inquiry Summary / تفصیلات:</strong><br />
+          <strong>Client Name:</strong> ${name}<br />
           <strong>Phone:</strong> ${phone || 'N/A'}<br />
           <strong>Product:</strong> ${product || 'Custom Caps'}<br />
           <strong>Quantity:</strong> ${quantity || 'N/A'}<br />
         </div>
+        <p style="font-size: 11px; color: #888; text-align: center; margin-top: 20px;">
+          Aura Global Industries | Factory: Nazimabad, Karachi, Pakistan
+        </p>
       </div>
     `;
 
-    // 4. Send Email Direct to Client Address (`to: email`)
+    // 4. Send Email
     await transporter.sendMail({
       from: `Aura Global Industries <${process.env.EMAIL_USER}>`,
-      to: email.trim(), // User ki email par send hoga
-      replyTo: ownerEmail, // User reply karega to aapko milega
-      bcc: ownerEmail, // CC ki jagah BCC use karein taaki header confuse na ho
+      to: email.trim(),
+      replyTo: ownerEmail,
+      bcc: ownerEmail,
       subject: `Quote Request Confirmation - Aura Global Industries`,
       text: aiReply,
       html: htmlTemplate,
