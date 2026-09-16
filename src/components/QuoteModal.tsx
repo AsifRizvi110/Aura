@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, Send, Mail, MapPin } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { PRODUCT_CATEGORIES } from '../data/companyData';
 import { useToast } from '../context/ToastContext';
 import { AuraLogo } from './AuraLogo';
+
+// EmailJS Credentials Configuration
+const EMAILJS_SERVICE_ID = 'service_aw36x0r';
+const EMAILJS_TEMPLATE_ID = 'template_dyz19fg'; // Single Template ID for both
+const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O'; // Replace with EmailJS Public Key
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -37,7 +43,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     e.preventDefault();
     setErrorMsg('');
 
-    // Validation
+    // Field Validation
     if (
       !fullName.trim() ||
       !email.trim() ||
@@ -57,35 +63,39 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
     setIsSubmitting(true);
 
+    // Template payload map matching EmailJS variables
+    const templateParams = {
+      from_name: fullName.trim(),
+      from_email: email.trim(),
+      phone: phone.trim(),
+      product: selectedCategory,
+      customization: customizationType,
+      quantity: quantity,
+      message: message.trim(),
+      owner_email: 'auraglobalindustries@gmail.com'
+    };
+
     try {
-      // Send dynamic form input to backend API
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: fullName,
-          email: email.trim(), // Form input value
-          phone: phone,
-          product: selectedCategory,
-          customization: customizationType,
-          quantity: quantity,
-          message: message,
-        }),
-      });
+      // 1. Send Notification Email to Admin/Factory Desk
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        ADMIN_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
 
-      const data = await response.json();
+      // 2. Send Automatic Confirmation Email to Client
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        AUTOREPLY_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send request');
-      }
-
-      // Success state
+      // UI Success state execution
       setIsSubmitting(false);
       setSubmitted(true);
 
-      // Trigger toast notification
       showQuoteSuccessToast({
         name: fullName,
         product: selectedCategory,
@@ -94,10 +104,10 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
       });
 
     } catch (error: any) {
-      console.error('API Route Error:', error);
+      console.error('EmailJS Error:', error);
       setIsSubmitting(false);
       setErrorMsg(
-        error.message || 'Unable to send your quote request right now. Please try again.'
+        'Unable to send your quote request right now. Please try again or contact directly.'
       );
     }
   };
@@ -126,7 +136,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         id="quote-modal-container"
         className="relative w-full max-w-2xl bg-[#0F0F0F] border border-white/15 rounded-sm shadow-2xl overflow-hidden text-zinc-200 max-h-[92vh] flex flex-col"
       >
-
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
           <div className="flex items-center gap-3">
@@ -136,7 +145,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <h3 className="font-heading text-xs font-bold text-white uppercase tracking-wider">
                 Manufacturing Quote Desk
               </h3>
-
               <p className="text-[10px] text-[#D4AF37] font-mono">
                 Nazimabad, Karachi, Pakistan
               </p>
@@ -154,12 +162,9 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
         {/* Modal Content */}
         <div className="p-6 overflow-y-auto space-y-5">
-
           {submitted ? (
-
             /* SUCCESS SCREEN */
             <div className="py-6 text-center space-y-4">
-
               <div className="w-14 h-14 rounded-sm bg-[#D4AF37]/20 border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
@@ -171,16 +176,13 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               <p className="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed bg-[#141414] p-4 rounded-sm border border-white/10">
                 Thank you for contacting Aura Global Industries.
                 Your quote request has been successfully sent to our
-                manufacturing team. An automated AI response has been sent to <strong className="text-[#D4AF37]">{email}</strong>.
+                manufacturing team. An automated confirmation email has been sent to <strong className="text-[#D4AF37]">{email}</strong>.
               </p>
 
               <div className="text-[11px] text-zinc-400 pt-2 space-y-1 font-mono">
-
                 <p className="flex items-center justify-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
-
                   Email received at:
-
                   <strong className="text-zinc-200">
                     auraglobalindustries@gmail.com
                   </strong>
@@ -188,33 +190,22 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
                 <p className="flex items-center justify-center gap-2">
                   <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-
                   Factory: Nazimabad, Karachi, Pakistan
                 </p>
-
               </div>
 
               <div className="pt-3">
-
                 <button
                   onClick={handleResetAndClose}
                   className="sleek-btn-primary px-6 py-2.5 rounded-sm text-xs cursor-pointer"
                 >
                   Done
                 </button>
-
               </div>
-
             </div>
-
           ) : (
-
             /* FORM */
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4"
-            >
-
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Error Message */}
               {errorMsg && (
                 <div className="p-3 text-xs bg-red-950/60 border border-red-500/40 text-red-300 rounded-sm">
@@ -224,13 +215,10 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
               {/* Full Name + Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
-                    Full Name{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    Full Name <span className="text-[#D4AF37]">*</span>
                   </label>
-
                   <input
                     type="text"
                     required
@@ -243,10 +231,8 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
-                    Email Address{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    Email Address <span className="text-[#D4AF37]">*</span>
                   </label>
-
                   <input
                     type="email"
                     required
@@ -256,18 +242,14 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white placeholder:text-zinc-600"
                   />
                 </div>
-
               </div>
 
               {/* Phone + Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
-                    Phone / WhatsApp{' '}
-                    <span className="text-[#D4AF37]">*</span>
+                    Phone / WhatsApp <span className="text-[#D4AF37]">*</span>
                   </label>
-
                   <input
                     type="tel"
                     required
@@ -282,7 +264,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Cap Category / Style
                   </label>
-
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
@@ -297,7 +278,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                         {cat.name}
                       </option>
                     ))}
-
                     <option
                       value="Bespoke OEM Development"
                       className="bg-[#141414] text-white"
@@ -306,47 +286,25 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     </option>
                   </select>
                 </div>
-
               </div>
 
               {/* Customization + Quantity */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Customization Needed
                   </label>
-
                   <select
                     value={customizationType}
-                    onChange={(e) =>
-                      setCustomizationType(e.target.value)
-                    }
+                    onChange={(e) => setCustomizationType(e.target.value)}
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
                   >
-                    <option value="3D Puff Embroidery">
-                      3D Puff Embroidery
-                    </option>
-
-                    <option value="Flat Embroidery">
-                      Flat Needle Embroidery
-                    </option>
-
-                    <option value="Screen Print / Silicone">
-                      Screen / 3D Silicone Print
-                    </option>
-
-                    <option value="Woven Patch">
-                      Woven Merrowed Patch
-                    </option>
-
-                    <option value="Laser Perforations">
-                      Laser Perforations & Sports
-                    </option>
-
-                    <option value="Full Private Label OEM">
-                      Full Private Label Package
-                    </option>
+                    <option value="3D Puff Embroidery">3D Puff Embroidery</option>
+                    <option value="Flat Embroidery">Flat Needle Embroidery</option>
+                    <option value="Screen Print / Silicone">Screen / 3D Silicone Print</option>
+                    <option value="Woven Patch">Woven Merrowed Patch</option>
+                    <option value="Laser Perforations">Laser Perforations & Sports</option>
+                    <option value="Full Private Label OEM">Full Private Label Package</option>
                   </select>
                 </div>
 
@@ -354,43 +312,25 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Estimated Production Quantity
                   </label>
-
                   <select
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
                   >
-                    <option value="Sample / Prototype Run">
-                      Sample / Prototype Run (10-50 pcs)
-                    </option>
-
-                    <option value="100 - 300 pcs">
-                      100 - 300 pcs (Test Order)
-                    </option>
-
-                    <option value="500 - 1,000 pcs">
-                      500 - 1,000 pcs (Standard Bulk)
-                    </option>
-
-                    <option value="2,000 - 5,000 pcs">
-                      2,000 - 5,000 pcs (Volume Tier)
-                    </option>
-
-                    <option value="10,000+ pcs">
-                      10,000+ pcs (Export Container)
-                    </option>
+                    <option value="Sample / Prototype Run">Sample / Prototype Run (10-50 pcs)</option>
+                    <option value="100 - 300 pcs">100 - 300 pcs (Test Order)</option>
+                    <option value="500 - 1,000 pcs">500 - 1,000 pcs (Standard Bulk)</option>
+                    <option value="2,000 - 5,000 pcs">2,000 - 5,000 pcs (Volume Tier)</option>
+                    <option value="10,000+ pcs">10,000+ pcs (Export Container)</option>
                   </select>
                 </div>
-
               </div>
 
               {/* Message */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
-                  Project Details / Message{' '}
-                  <span className="text-[#D4AF37]">*</span>
+                  Project Details / Message <span className="text-[#D4AF37]">*</span>
                 </label>
-
                 <textarea
                   required
                   rows={3}
@@ -403,7 +343,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
               {/* Submit */}
               <div className="pt-2 flex items-center justify-between">
-
                 <p className="text-[10px] text-zinc-500 font-mono">
                   DISPATCH:{' '}
                   <span className="text-[#D4AF37]">
@@ -416,24 +355,18 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   disabled={isSubmitting}
                   className="sleek-btn-primary px-6 py-2.5 rounded-sm text-xs flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
                 >
-
                   {isSubmitting ? (
-                    <span>Processing AI Reply...</span>
+                    <span>Sending Quote Request...</span>
                   ) : (
                     <>
                       <span>Submit Quote Request</span>
                       <Send className="w-3.5 h-3.5" />
                     </>
                   )}
-
                 </button>
-
               </div>
-
             </form>
-
           )}
-
         </div>
       </div>
     </div>
