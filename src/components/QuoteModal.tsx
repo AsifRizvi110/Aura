@@ -7,7 +7,8 @@ import { AuraLogo } from './AuraLogo';
 
 // EmailJS Credentials Configuration
 const EMAILJS_SERVICE_ID = 'service_aw36x0r';
-const EMAILJS_TEMPLATE_ID = 'template_dyz19fg'; // Single Template ID
+const EMAILJS_ADMIN_TEMPLATE_ID = 'template_dyz19fg';    // For Admin Notification
+const EMAILJS_AUTOREPLY_TEMPLATE_ID = 'template_5f71n45'; // For Customer Auto-Reply
 const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O';
 
 interface QuoteModalProps {
@@ -39,11 +40,54 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Helper Function: Generates AI response in the user's language using Gemini API
+  const generateAiReply = async (userMessage: string, userName: string) => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your request and will get back to you shortly.`;
+    }
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `You are an executive assistant for Aura Global Industries (a premium cap manufacturer in Karachi, Pakistan). 
+                    Write a brief, polite response acknowledging a quote request from customer "${userName}".
+                    
+                    CRITICAL INSTRUCTION: Analyze the user's input language and write your response in the EXACT SAME LANGUAGE as the user's message (e.g., Roman Urdu/Hindi, Urdu, English, German, French, etc.).
+                    Keep it professional, warm, and concise (under 3 sentences).
+                    
+                    User Message: "${userMessage}"`
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
+
+      const data = await response.json();
+      return (
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        `Dear ${userName}, thank you for reaching out to Aura Global Industries.`
+      );
+    } catch (error) {
+      console.error('AI Generation Error:', error);
+      return `Dear ${userName}, thank you for reaching out to Aura Global Industries. Our team will review your specs and get back to you shortly.`;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    // Field Validation
     if (
       !fullName.trim() ||
       !email.trim() ||
@@ -63,10 +107,13 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
     setIsSubmitting(true);
 
-    // EmailJS Initializing
+    // 1. Generate dynamic multi-lingual AI response
+    const aiGeneratedReply = await generateAiReply(message.trim(), fullName.trim());
+
+    // 2. EmailJS Initializing
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    // Template payload map matching EmailJS variables
+    // 3. Payload mapping
     const templateParams = {
       full_name: fullName.trim(),
       name: fullName.trim(),
@@ -76,19 +123,29 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
       customization: customizationType,
       quantity: quantity,
       message: message.trim(),
+      ai_reply: aiGeneratedReply,
       owner_email: 'auraglobalindustries@gmail.com'
     };
 
     try {
-      // Single emailjs call (Auto-reply automatically handles if linked in EmailJS dashboard)
-      await emailjs.send(
+      // Send Email 1: Admin Notification
+      const adminPromise = emailjs.send(
         EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
+        EMAILJS_ADMIN_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
 
-      // UI Success state execution
+      // Send Email 2: Customer Auto-Reply
+      const customerPromise = emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_AUTOREPLY_TEMPLATE_ID,
+        templateParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      await Promise.all([adminPromise, customerPromise]);
+
       setIsSubmitting(false);
       setSubmitted(true);
 
@@ -98,7 +155,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         quantity: quantity,
         email: email
       });
-
     } catch (error: any) {
       console.error('EmailJS Error:', error);
       setIsSubmitting(false);
@@ -202,14 +258,12 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
           ) : (
             /* FORM */
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Error Message */}
               {errorMsg && (
                 <div className="p-3 text-xs bg-red-950/60 border border-red-500/40 text-red-300 rounded-sm">
                   {errorMsg}
                 </div>
               )}
 
-              {/* Full Name + Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
@@ -240,7 +294,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
               </div>
 
-              {/* Phone + Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
@@ -284,7 +337,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
               </div>
 
-              {/* Customization + Quantity */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
@@ -322,7 +374,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
               </div>
 
-              {/* Message */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                   Project Details / Message <span className="text-[#D4AF37]">*</span>
@@ -337,7 +388,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 />
               </div>
 
-              {/* Submit */}
               <div className="pt-2 flex items-center justify-between">
                 <p className="text-[10px] text-zinc-500 font-mono">
                   DISPATCH:{' '}
@@ -352,7 +402,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   className="sleek-btn-primary px-6 py-2.5 rounded-sm text-xs flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <span>Sending Quote Request...</span>
+                    <span>Generating Response & Sending...</span>
                   ) : (
                     <>
                       <span>Submit Quote Request</span>
