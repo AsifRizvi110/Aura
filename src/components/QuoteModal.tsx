@@ -7,8 +7,8 @@ import { AuraLogo } from './AuraLogo';
 
 // EmailJS Credentials Configuration
 const EMAILJS_SERVICE_ID = 'service_aw36x0r';
-const EMAILJS_TEMPLATE_ID = 'template_dyz19fg'; // Single Template ID for both
-const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O'; // Replace with EmailJS Public Key
+const EMAILJS_TEMPLATE_ID = 'template_dyz19fg'; // Single Template ID
+const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O';
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -63,12 +63,16 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
     setIsSubmitting(true);
 
+    // EmailJS Initializing
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
     // Template payload map matching EmailJS variables
     const templateParams = {
-      from_name: fullName.trim(),
-      from_email: email.trim(),
+      full_name: fullName.trim(),
+      name: fullName.trim(),
+      email: email.trim(),
       phone: phone.trim(),
-      product: selectedCategory,
+      category: selectedCategory,
       customization: customizationType,
       quantity: quantity,
       message: message.trim(),
@@ -76,18 +80,10 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     };
 
     try {
-      // 1. Send Notification Email to Admin/Factory Desk
+      // Single emailjs call (Auto-reply automatically handles if linked in EmailJS dashboard)
       await emailjs.send(
         EMAILJS_SERVICE_ID,
-        ADMIN_TEMPLATE_ID,
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      );
-
-      // 2. Send Automatic Confirmation Email to Client
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        AUTOREPLY_TEMPLATE_ID,
+        EMAILJS_TEMPLATE_ID,
         templateParams,
         EMAILJS_PUBLIC_KEY
       );
