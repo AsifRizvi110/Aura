@@ -17,6 +17,63 @@ interface QuoteModalProps {
   preselectedProduct?: string;
 }
 
+// 1. Helper Function: Gemini API Integration for Multi-Lingual Auto-Reply
+const generateAiReply = async (userMessage: string, userName: string) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your request and our team will provide full pricing and catalog details shortly.`;
+  }
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: {
+            parts: [
+              {
+                text: `You are the Executive Assistant at Aura Global Industries, a premium custom headwear manufacturer in Karachi, Pakistan.
+                
+                CRITICAL LANGUAGE RULE:
+                1. Detect the language AND script of the customer's message (e.g., Hindi script, Roman Urdu/Hindi, Arabic script, English, French, Spanish, German, Japanese, Chinese, etc.).
+                2. You MUST respond strictly in the EXACT SAME language and script used by the customer.
+                   - If customer writes in Hindi script (e.g. "ये कैप कितने हैं?"), respond in HINDI SCRIPT.
+                   - If customer writes in Roman Urdu/Hindi (e.g. "Yeh kitne ka hai"), respond in ROMAN URDU.
+                   - If customer writes in Urdu, English, German, etc., respond in that respective language.
+                3. Never switch to English if the user wrote in Hindi, Urdu, Roman Urdu, or any other language.
+                4. Keep the acknowledgment polite, warm, and brief (under 3 sentences).`
+              }
+            ]
+          },
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Customer Name: "${userName}"
+                  Customer Message: "${userMessage}"
+                  
+                  Acknowledge their product request politely, confirm receipt, and assure them our sales team will provide exact unit pricing and specifications shortly. Greeting format: "Dear ${userName},"`
+                }
+              ]
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      `Dear ${userName}, thank you for reaching out to Aura Global Industries. We will get back to you shortly.`
+    );
+  } catch (error) {
+    console.error('AI Generation Error:', error);
+    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your details and will get back to you shortly.`;
+  }
+};
+
 export const QuoteModal: React.FC<QuoteModalProps> = ({
   isOpen,
   onClose,
@@ -39,50 +96,6 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
   const [errorMsg, setErrorMsg] = useState('');
 
   if (!isOpen) return null;
-
-  // Helper Function: Generates AI response in the user's language using Gemini API
-  const generateAiReply = async (userMessage: string, userName: string) => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) {
-      return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your request and will get back to you shortly.`;
-    }
-
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `You are an executive assistant for Aura Global Industries (a premium cap manufacturer in Karachi, Pakistan). 
-                    Write a brief, polite response acknowledging a quote request from customer "${userName}".
-                    
-                    CRITICAL INSTRUCTION: Analyze the user's input language and write your response in the EXACT SAME LANGUAGE as the user's message (e.g., Roman Urdu/Hindi, Urdu, English, German, French, etc.).
-                    Keep it professional, warm, and concise (under 3 sentences).
-                    
-                    User Message: "${userMessage}"`
-                  }
-                ]
-              }
-            ]
-          })
-        }
-      );
-
-      const data = await response.json();
-      return (
-        data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        `Dear ${userName}, thank you for reaching out to Aura Global Industries.`
-      );
-    } catch (error) {
-      console.error('AI Generation Error:', error);
-      return `Dear ${userName}, thank you for reaching out to Aura Global Industries. Our team will review your specs and get back to you shortly.`;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,13 +120,13 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
     setIsSubmitting(true);
 
-    // 1. Generate dynamic multi-lingual AI response
+    // Dynamic multi-lingual AI response generate karna
     const aiGeneratedReply = await generateAiReply(message.trim(), fullName.trim());
 
-    // 2. EmailJS Initializing
+    // EmailJS Initialize karna
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    // 3. Payload mapping
+    // Payload Mapping (is mein `ai_reply` include hai jo aapke EmailJS auto-reply template mein send hoga)
     const templateParams = {
       full_name: fullName.trim(),
       name: fullName.trim(),
