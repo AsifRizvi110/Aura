@@ -15,6 +15,13 @@ import {
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
+// This form must ALWAYS notify the admin, regardless of what email the visitor types.
+// It reuses the same Admin Notification template as the Quote form.
+const EMAILJS_SERVICE_ID = 'service_aw36x0r';
+const EMAILJS_ADMIN_TEMPLATE_ID = 'template_dyz19fg';
+const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O';
+const ADMIN_EMAIL = 'auraglobalindustries@gmail.com';
+
 export const ContactPage: React.FC = () => {
   const { showToast } = useToast();
 
@@ -56,16 +63,23 @@ export const ContactPage: React.FC = () => {
 
     try {
       await emailjs.send(
-        'service_vili4jn',
-        'template_5f71n45',
+        EMAILJS_SERVICE_ID,
+        EMAILJS_ADMIN_TEMPLATE_ID,
         {
           full_name: fullName,
-          email: email,
+          name: fullName,
+          customer_email: email,
           phone: phone,
           message: message,
+          original_inquiry: message,
+          to_email: ADMIN_EMAIL,     // always the admin, never the visitor's email
+          owner_email: ADMIN_EMAIL,
+          category: 'General Contact Inquiry',
+          customization: '-',
+          quantity: '-'
         },
         {
-          publicKey: 'eWmYD7PcYa6ywdX1O',
+          publicKey: EMAILJS_PUBLIC_KEY,
         }
       );
 

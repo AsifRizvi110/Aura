@@ -10,6 +10,7 @@ const EMAILJS_SERVICE_ID = 'service_aw36x0r';
 const EMAILJS_ADMIN_TEMPLATE_ID = 'template_dyz19fg';    // For Admin Notification
 const EMAILJS_AUTOREPLY_TEMPLATE_ID = 'template_5f71n45'; // For Customer Auto-Reply
 const EMAILJS_PUBLIC_KEY = 'eWmYD7PcYa6ywdX1O';
+const ADMIN_EMAIL = 'auraglobalindustries@gmail.com';
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -17,46 +18,38 @@ interface QuoteModalProps {
   preselectedProduct?: string;
 }
 
-// 1. Helper Function: Gemini API Integration for Multi-Lingual Auto-Reply
+// Gemini REST Integration using gemini-3.5-flash (gemini-2.0-flash was retired by Google)
 const generateAiReply = async (userMessage: string, userName: string) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
   if (!apiKey) {
-    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your request and our team will provide full pricing and catalog details shortly.`;
+    console.error('VITE_GEMINI_API_KEY is missing in .env file!');
+    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your query and will get back to you shortly.`;
   }
+
+  const promptText = `You are the Executive Assistant at Aura Global Industries, a custom headwear manufacturer.
+
+STRICT MULTI-LINGUAL INSTRUCTIONS:
+1. Detect the exact language AND script used in the Customer Message below.
+2. Respond strictly in the EXACT SAME language and script (e.g., Devanagari script for Hindi, Roman Urdu for Roman Urdu, Urdu script for Urdu, English for English).
+3. Do NOT reply in English unless the inquiry itself is written in English.
+4. Keep the response professional, polite, and brief (2-3 sentences acknowledging receipt and confirming pricing/details will follow).
+
+Customer Name: ${userName}
+Customer Message: ${userMessage}`;
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          system_instruction: {
-            parts: [
-              {
-                text: `You are the Executive Assistant at Aura Global Industries, a premium custom headwear manufacturer in Karachi, Pakistan.
-                
-                CRITICAL LANGUAGE RULE:
-                1. Detect the language AND script of the customer's message (e.g., Hindi script, Roman Urdu/Hindi, Arabic script, English, French, Spanish, German, Japanese, Chinese, etc.).
-                2. You MUST respond strictly in the EXACT SAME language and script used by the customer.
-                   - If customer writes in Hindi script (e.g. "ये कैप कितने हैं?"), respond in HINDI SCRIPT.
-                   - If customer writes in Roman Urdu/Hindi (e.g. "Yeh kitne ka hai"), respond in ROMAN URDU.
-                   - If customer writes in Urdu, English, German, etc., respond in that respective language.
-                3. Never switch to English if the user wrote in Hindi, Urdu, Roman Urdu, or any other language.
-                4. Keep the acknowledgment polite, warm, and brief (under 3 sentences).`
-              }
-            ]
-          },
           contents: [
             {
-              parts: [
-                {
-                  text: `Customer Name: "${userName}"
-                  Customer Message: "${userMessage}"
-                  
-                  Acknowledge their product request politely, confirm receipt, and assure them our sales team will provide exact unit pricing and specifications shortly. Greeting format: "Dear ${userName},"`
-                }
-              ]
+              parts: [{ text: promptText }]
             }
           ]
         })
@@ -64,13 +57,19 @@ const generateAiReply = async (userMessage: string, userName: string) => {
     );
 
     const data = await response.json();
-    return (
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      `Dear ${userName}, thank you for reaching out to Aura Global Industries. We will get back to you shortly.`
-    );
+
+    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      return data.candidates[0].content.parts[0].text;
+    }
+
+    if (data?.error) {
+      console.error('Gemini API Error details:', data.error);
+    }
+
+    throw new Error('Invalid response structure from Gemini API');
   } catch (error) {
     console.error('AI Generation Error:', error);
-    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your details and will get back to you shortly.`;
+    return `Dear ${userName}, thank you for contacting Aura Global Industries. We have received your query and will get back to you shortly.`;
   }
 };
 
@@ -120,44 +119,57 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
     setIsSubmitting(true);
 
-    // Dynamic multi-lingual AI response generate karna
-    const aiGeneratedReply = await generateAiReply(message.trim(), fullName.trim());
-
-    // EmailJS Initialize karna
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-
-    // Payload Mapping (is mein `ai_reply` include hai jo aapke EmailJS auto-reply template mein send hoga)
-    const templateParams = {
-      full_name: fullName.trim(),
-      name: fullName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      category: selectedCategory,
-      customization: customizationType,
-      quantity: quantity,
-      message: message.trim(),
-      ai_reply: aiGeneratedReply,
-      owner_email: 'auraglobalindustries@gmail.com'
-    };
-
     try {
-      // Send Email 1: Admin Notification
-      const adminPromise = emailjs.send(
+      // 1. Generate Multi-lingual AI Response using Gemini REST API
+      const aiGeneratedReply = await generateAiReply(message.trim(), fullName.trim());
+
+      // 2. Initialize EmailJS
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+
+      // 3. Send Admin Notification Email
+      // IMPORTANT: In the EmailJS dashboard, the ADMIN template's
+      // "To Email" field must be set to {{to_email}} (NOT {{email}}),
+      // otherwise this notification will be sent to the customer instead of you.
+      await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_ADMIN_TEMPLATE_ID,
-        templateParams,
+        {
+          full_name: fullName.trim(),
+          name: fullName.trim(),
+          customer_email: email.trim(),
+          phone: phone.trim(),
+          category: selectedCategory,
+          customization: customizationType,
+          quantity: quantity,
+          message: message.trim(),
+          original_inquiry: message.trim(),
+          to_email: ADMIN_EMAIL,
+          owner_email: ADMIN_EMAIL
+        },
         EMAILJS_PUBLIC_KEY
       );
 
-      // Send Email 2: Customer Auto-Reply
-      const customerPromise = emailjs.send(
+      // 4. Send Customer Auto-Reply Email
+      // IMPORTANT: In the EmailJS dashboard, the AUTO-REPLY template's
+      // "From Name" field must be a fixed value like "Aura Global Industries"
+      // (NOT {{name}}), otherwise the customer will see their own name as the sender.
+      await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_AUTOREPLY_TEMPLATE_ID,
-        templateParams,
+        {
+          to_name: fullName.trim(),
+          full_name: fullName.trim(),
+          to_email: email.trim(),
+          email: email.trim(),
+          category: selectedCategory,
+          customization: customizationType,
+          quantity: quantity,
+          message: message.trim(),
+          original_inquiry: message.trim(),
+          ai_reply: aiGeneratedReply
+        },
         EMAILJS_PUBLIC_KEY
       );
-
-      await Promise.all([adminPromise, customerPromise]);
 
       setIsSubmitting(false);
       setSubmitted(true);
@@ -169,7 +181,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         email: email
       });
     } catch (error: any) {
-      console.error('EmailJS Error:', error);
+      console.error('Submission Error:', error);
       setIsSubmitting(false);
       setErrorMsg(
         'Unable to send your quote request right now. Please try again or contact directly.'
@@ -249,7 +261,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
                   Email received at:
                   <strong className="text-zinc-200">
-                    auraglobalindustries@gmail.com
+                    {ADMIN_EMAIL}
                   </strong>
                 </p>
 
@@ -405,7 +417,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <p className="text-[10px] text-zinc-500 font-mono">
                   DISPATCH:{' '}
                   <span className="text-[#D4AF37]">
-                    auraglobalindustries@gmail.com
+                    {ADMIN_EMAIL}
                   </span>
                 </p>
 
