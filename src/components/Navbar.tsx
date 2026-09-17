@@ -68,11 +68,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="flex items-center gap-4">
             <a
-              href="mailto:auraglobalindustries@gmail.com"
+              href="mailto:Info@auraglobalindustries.com"
               className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
-              auraglobalindustries@gmail.com
+              Info@auraglobalindustries.com
             </a>
             <span className="text-zinc-700" aria-hidden="true">|</span>
             <SocialLinks variant="compact" />

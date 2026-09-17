@@ -195,10 +195,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
                 <Mail className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
                   <a
-                    href="mailto:auraglobalindustries@gmail.com"
+                    href="mailto:Info@auraglobalindustries.com"
                     className="text-zinc-200 hover:text-[#D4AF37] transition-colors break-all"
                   >
-                    auraglobalindustries@gmail.com
+                    Info@auraglobalindustries.com
                   </a>
                   <p className="text-[11px] text-zinc-500">Official B2B Inquiries</p>
                 </div>
@@ -232,7 +232,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
           <p>© 2026 Aura Global Industries. All Rights Reserved.</p>
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <a href="mailto:auraglobalindustries@gmail.com" className="hover:text-white transition-colors break-all">
-              auraglobalindustries@gmail.com
+              Info@auraglobalindustries.com
+
             </a>
             <span className="hidden sm:inline">•</span>
             <span>Nazimabad, Karachi, Pakistan</span>

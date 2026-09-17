@@ -614,11 +614,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
     </span>
 
     <a
-      href="mailto:auraglobalindustries@gmail.com"
+      href="mailto:Info@auraglobalindustries.com"
       className="text-[#D4AF37] hover:underline font-semibold flex items-center gap-1 font-mono"
     >
       <Mail className="w-3.5 h-3.5" />
-      auraglobalindustries@gmail.com
+      Info@auraglobalindustries.com
     </a>
 
   </div>

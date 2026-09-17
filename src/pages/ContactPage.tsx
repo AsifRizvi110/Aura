@@ -200,10 +200,10 @@ export const ContactPage: React.FC = () => {
                     </p>
 
                     <a
-                      href="mailto:auraglobalindustries@gmail.com"
+                      href="mailto:Info@auraglobalindustries.com"
                       className="text-sm font-bold text-white hover:text-[#D4AF37] transition-colors break-all block"
                     >
-                      auraglobalindustries@gmail.com
+                      Info@auraglobalindustries.com
                     </a>
 
                     <p className="text-[11px] text-slate-400">
@@ -442,7 +442,7 @@ export const ContactPage: React.FC = () => {
                     <p className="text-xs text-slate-400">
                       Destination:{' '}
                       <span className="text-[#D4AF37] font-semibold">
-                        auraglobalindustries@gmail.com
+                        Info@auraglobalindustries.com
                       </span>
                     </p>
 
