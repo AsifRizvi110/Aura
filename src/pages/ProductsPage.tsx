@@ -53,8 +53,35 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
     return matchesCategory && matchesSearch;
   });
 
+  // SEO: ItemList/Product structured data for the full catalog (not the
+  // filtered view) so search engines always see the complete product range.
+  const productListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: PRODUCTS_CATALOG.map((item, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      item: {
+        '@type': 'Product',
+        name: item.name,
+        description: item.description,
+        image: item.imageUrl,
+        category: item.category,
+        brand: {
+          '@type': 'Organization',
+          name: 'Aura Global Industries'
+        }
+      }
+    }))
+  };
+
   return (
     <div id="products-page-root" className="pt-28 sm:pt-36 pb-20 space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
+      />
+
       {/* Page Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] uppercase tracking-[0.25em] font-semibold rounded-sm bg-[#0F0F0F]">
@@ -144,8 +171,12 @@ export const ProductsPage: React.FC<ProductsPageProps> = ({
                   <div className="relative aspect-[4/3] bg-black overflow-hidden">
                     <img
                       src={product.imageUrl}
-                      alt={product.altText}
+                      alt={
+                        product.altText ||
+                        `${product.name} — custom ${product.material} cap by Aura Global Industries, Karachi`
+                      }
                       referrerPolicy="no-referrer"
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />

@@ -20,9 +20,16 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
+    // Respect the user's OS-level "reduce motion" preference (accessibility +
+    // saves battery/CPU on mobile, which helps real-device performance scores)
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
     let animationFrameId: number;
+    let isPaused = document.hidden;
 
     // Node interface for geometric plexus constellation
     interface PlexusNode {
@@ -46,7 +53,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
     ];
 
     let nodes: PlexusNode[] = [];
-    
+
     // Calculate density according to screen size
     const calculateNodeCount = () => {
       const area = width * height;
@@ -126,13 +133,25 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
       }
     };
 
+    // Pause the animation loop when the tab isn't visible, so it doesn't
+    // burn mobile battery/CPU in the background (also helps Core Web Vitals)
+    const handleVisibilityChange = () => {
+      isPaused = document.hidden;
+      if (!isPaused && !prefersReducedMotion) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
     window.addEventListener('resize', handleResize, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mouseleave', handleMouseLeave, { passive: true });
     window.addEventListener('click', handleClick);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Render loop
     const render = () => {
+      if (isPaused) return;
+
       ctx.clearRect(0, 0, width, height);
 
       // 1. Subtle Stylized Luxury Cap Silhouette Background Watermark
@@ -316,13 +335,20 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
       animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    // If the user prefers reduced motion, draw a single static frame instead
+    // of running the animation loop at all.
+    if (prefersReducedMotion) {
+      ctx.clearRect(0, 0, width, height);
+    } else {
+      render();
+    }
 
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('click', handleClick);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       cancelAnimationFrame(animationFrameId);
     };
   }, [id, showCapSilhouette]);

@@ -523,13 +523,15 @@ export const CapCustomizer: React.FC = () => {
                 <h3 className="font-bold text-xs uppercase tracking-wide">1. Choose Cap Color</h3>
                 <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold">{capColor}</span>
               </div>
-              
+
               {/* Preset Colors + Custom Picker Button */}
               <div className="grid grid-cols-5 gap-2">
                 {COLORS.map((color) => (
                   <button
                     key={color}
                     onClick={() => handleColorChange(color)}
+                    aria-label={`Set cap color to ${color}`}
+                    aria-pressed={capColor.toLowerCase() === color.toLowerCase()}
                     className={`h-9 rounded-lg border-2 transition ${
                       capColor.toLowerCase() === color.toLowerCase()
                         ? "border-white scale-105 shadow-md ring-2 ring-[#D4AF37]"
@@ -559,6 +561,7 @@ export const CapCustomizer: React.FC = () => {
                     type="color"
                     value={capColor}
                     onChange={(e) => handleColorChange(e.target.value)}
+                    aria-label="Pick a custom cap color"
                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                   />
                 </label>
@@ -566,9 +569,10 @@ export const CapCustomizer: React.FC = () => {
 
               {/* Hex Code Input for Direct Custom Color */}
               <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
-                <span className="text-[11px] text-neutral-400 font-semibold uppercase">Custom Hex:</span>
+                <label htmlFor="cap-hex-input" className="text-[11px] text-neutral-400 font-semibold uppercase">Custom Hex:</label>
                 <div className="relative flex-1">
                   <input
+                    id="cap-hex-input"
                     type="text"
                     value={capColor}
                     onChange={(e) => {
@@ -579,6 +583,7 @@ export const CapCustomizer: React.FC = () => {
                     }}
                     placeholder="#151719"
                     maxLength={7}
+                    aria-label="Enter a custom hex color code for the cap"
                     className="w-full bg-black/40 border border-white/20 focus:border-[#D4AF37] rounded-lg px-2.5 py-1 text-xs font-mono text-white outline-none uppercase"
                   />
                 </div>
@@ -591,9 +596,18 @@ export const CapCustomizer: React.FC = () => {
 
               {logoPreview ? (
                 <div className="relative h-28 rounded-xl border border-white/15 bg-black/30 flex items-center justify-center mb-3">
-                  <img src={logoPreview} alt="Logo" className="max-w-[90%] max-h-[90%] object-contain" />
+                  <img
+                    src={logoPreview}
+                    alt={
+                      fileName
+                        ? `Preview of uploaded logo "${fileName}" to be printed on the front of the custom cap`
+                        : "Preview of the uploaded logo to be printed on the front of the custom cap"
+                    }
+                    className="max-w-[90%] max-h-[90%] object-contain"
+                  />
                   <button
                     onClick={handleRemoveLogo}
+                    aria-label="Remove uploaded logo"
                     className="absolute right-2 top-2 w-7 h-7 rounded-full bg-black/70 flex items-center justify-center hover:bg-black transition"
                   >
                     <X size={15} />
@@ -613,6 +627,7 @@ export const CapCustomizer: React.FC = () => {
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
                   onChange={handleLogoUpload}
+                  aria-label="Upload a logo image file"
                   className="hidden"
                 />
               </label>
@@ -624,6 +639,7 @@ export const CapCustomizer: React.FC = () => {
               <div className="grid grid-cols-4 gap-2">
                 <button
                   onClick={() => setCameraView("threeQuarter")}
+                  aria-label="Rotate to three-quarter view"
                   className="h-12 rounded-xl bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center gap-1 transition"
                 >
                   <Rotate3D size={17} />
@@ -635,6 +651,7 @@ export const CapCustomizer: React.FC = () => {
                     const camera = cameraRef.current;
                     if (camera) camera.position.multiplyScalar(0.85);
                   }}
+                  aria-label="Zoom in on the cap"
                   className="h-12 rounded-xl bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center gap-1 transition"
                 >
                   <ZoomIn size={17} />
@@ -645,6 +662,7 @@ export const CapCustomizer: React.FC = () => {
                   onClick={() => {
                     if (controlsRef.current) controlsRef.current.enablePan = true;
                   }}
+                  aria-label="Enable pan mode"
                   className="h-12 rounded-xl bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center gap-1 transition"
                 >
                   <Hand size={17} />
@@ -653,6 +671,7 @@ export const CapCustomizer: React.FC = () => {
 
                 <button
                   onClick={() => setCameraView("front")}
+                  aria-label="Reset camera to front view"
                   className="h-12 rounded-xl bg-white/5 hover:bg-white/10 flex flex-col items-center justify-center gap-1 transition"
                 >
                   <RotateCcw size={17} />
@@ -664,6 +683,7 @@ export const CapCustomizer: React.FC = () => {
 
           <button
             onClick={downloadImage}
+            aria-label="Download a render of your customized 3D cap"
             className="w-full mt-0 bg-[#e1262d] hover:bg-[#c91d24] py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-xs uppercase tracking-wider shadow-lg transition"
           >
             <Download size={18} />
@@ -672,13 +692,13 @@ export const CapCustomizer: React.FC = () => {
         </aside>
 
         {/* 360 VIEWER */}
-        <main className="relative flex-1 min-h-[600px] h-[720px] bg-[#141618]/70 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center">
-          <div className="absolute top-5 left-5 z-30">
-            <div className="bg-[#202223]/90 text-white rounded-xl px-4 py-2 flex items-center gap-2.5 border border-white/10 shadow-xl">
-              <Box size={18} className="text-[#D4AF37]" />
+        <main className="relative flex-1 min-h-[420px] h-[480px] sm:h-[600px] md:h-[720px] bg-[#141618]/70 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center">
+          <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-30">
+            <div className="bg-[#202223]/90 text-white rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-2 sm:gap-2.5 border border-white/10 shadow-xl">
+              <Box size={16} className="text-[#D4AF37] sm:w-[18px] sm:h-[18px]" />
               <div>
-                <p className="text-[9px] uppercase text-neutral-400">Interactive</p>
-                <p className="text-xs font-bold">360° Studio</p>
+                <p className="text-[8px] sm:text-[9px] uppercase text-neutral-400">Interactive</p>
+                <p className="text-[11px] sm:text-xs font-bold">360° Studio</p>
               </div>
             </div>
           </div>
@@ -692,30 +712,37 @@ export const CapCustomizer: React.FC = () => {
             </div>
           )}
 
-          <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+          <div
+            ref={mountRef}
+            role="img"
+            aria-label="Interactive 3D preview of your customized cap. Drag to rotate, scroll to zoom, right click to pan."
+            className="w-full h-full cursor-grab active:cursor-grabbing"
+          />
 
           {/* VIEW BUTTONS */}
-          <div className="absolute right-5 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2.5 bg-black/40 backdrop-blur-md p-2 rounded-2xl border border-white/10">
+          <div className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-1.5 sm:gap-2.5 bg-black/40 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl border border-white/10">
             {viewItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setCameraView(item.id)}
-                className={`w-[65px] h-[65px] rounded-xl transition flex flex-col items-center justify-center gap-1 ${
+                aria-label={`Switch to ${item.label} view`}
+                aria-pressed={view === item.id}
+                className={`w-[46px] h-[46px] sm:w-[65px] sm:h-[65px] rounded-xl transition flex flex-col items-center justify-center gap-1 ${
                   view === item.id
                     ? "bg-[#D4AF37] text-white shadow-[0_0_15px_rgba(242,125,38,0.4)]"
                     : "bg-white/5 text-neutral-300 hover:bg-white/15"
                 }`}
               >
-                <Rotate3D size={16} />
-                <span className="text-[10px] font-bold uppercase">{item.label}</span>
+                <Rotate3D size={14} className="sm:w-4 sm:h-4" />
+                <span className="text-[8px] sm:text-[10px] font-bold uppercase">{item.label}</span>
               </button>
             ))}
           </div>
 
           {/* INSTRUCTION */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
-            <div className="px-6 py-2.5 bg-black/70 backdrop-blur-md text-white rounded-full text-xs border border-white/10 shadow-2xl whitespace-nowrap">
-              Drag to rotate <span className="mx-2 text-[#D4AF37]">•</span> Scroll to zoom <span className="mx-2 text-[#D4AF37]">•</span> Right click to pan
+          <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-[92%] sm:w-auto flex justify-center">
+            <div className="px-3 py-2 sm:px-6 sm:py-2.5 bg-black/70 backdrop-blur-md text-white rounded-2xl sm:rounded-full text-[10px] sm:text-xs border border-white/10 shadow-2xl text-center leading-snug">
+              Drag to rotate <span className="mx-1 sm:mx-2 text-[#D4AF37]">•</span> Scroll to zoom <span className="mx-1 sm:mx-2 text-[#D4AF37]">•</span> Right click to pan
             </div>
           </div>
         </main>

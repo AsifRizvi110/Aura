@@ -122,6 +122,31 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div id="contact-page-root" className="pt-32 sm:pt-36 pb-20 space-y-16">
+      {/* SEO: structured data so Google can show this as a business contact
+          point (helps "Aura Global Industries contact" searches) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ClothingStore',
+            name: 'Aura Global Industries',
+            email: 'auraglobalindustries@gmail.com',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Nazimabad, Karachi',
+              addressCountry: 'PK'
+            },
+            openingHours: 'Mo-Sa 09:00-19:00',
+            contactPoint: {
+              '@type': 'ContactPoint',
+              email: 'auraglobalindustries@gmail.com',
+              contactType: 'customer service',
+              areaServed: 'Worldwide'
+            }
+          })
+        }}
+      />
 
       {/* Page Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
@@ -335,6 +360,7 @@ export const ContactPage: React.FC = () => {
                       name="full_name"
                       type="text"
                       required
+                      autoComplete="name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Syed Ali / Procurement Manager"
@@ -358,6 +384,7 @@ export const ContactPage: React.FC = () => {
                         name="email"
                         type="email"
                         required
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="e.g. client@brand.com"
@@ -378,6 +405,7 @@ export const ContactPage: React.FC = () => {
                         name="phone"
                         type="tel"
                         required
+                        autoComplete="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="e.g. +92 300 1234567"

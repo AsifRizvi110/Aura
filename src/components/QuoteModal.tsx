@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, CheckCircle2, Send, Mail, MapPin } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { PRODUCT_CATEGORIES } from '../data/companyData';
@@ -19,6 +19,11 @@ interface QuoteModalProps {
 }
 
 // Gemini REST Integration using gemini-3.5-flash (gemini-2.0-flash was retired by Google)
+// NOTE: This currently calls the Gemini API directly from the browser using
+// VITE_GEMINI_API_KEY, which means the key ships inside the public JS bundle
+// and can be read by anyone via View Source / DevTools. For production, move
+// this call behind a small backend/serverless endpoint so the key stays
+// server-side only.
 const generateAiReply = async (userMessage: string, userName: string) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
@@ -93,6 +98,24 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Close on Escape key, and lock background scroll while the modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -208,18 +231,23 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     <div
       id="quote-modal-overlay"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={handleResetAndClose}
     >
       <div
         id="quote-modal-container"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quote-modal-title"
+        onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-2xl bg-[#0F0F0F] border border-white/15 rounded-sm shadow-2xl overflow-hidden text-zinc-200 max-h-[92vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
+          <div className="flex items-center gap-3 min-w-0">
             <AuraLogo size="sm" showTagline={false} />
 
             <div className="hidden sm:block border-l border-white/10 pl-3">
-              <h3 className="font-heading text-xs font-bold text-white uppercase tracking-wider">
+              <h3 id="quote-modal-title" className="font-heading text-xs font-bold text-white uppercase tracking-wider">
                 Manufacturing Quote Desk
               </h3>
               <p className="text-[10px] text-[#D4AF37] font-mono">
@@ -230,20 +258,20 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
           <button
             onClick={handleResetAndClose}
-            className="p-1.5 rounded-sm bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-sm bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
             aria-label="Close quote modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Modal Content */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5">
           {submitted ? (
             /* SUCCESS SCREEN */
             <div className="py-6 text-center space-y-4">
               <div className="w-14 h-14 rounded-sm bg-[#D4AF37]/20 border border-[#D4AF37] text-[#D4AF37] flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-7 h-7" />
+                <CheckCircle2 className="w-7 h-7" aria-hidden="true" />
               </div>
 
               <h4 className="font-heading text-lg font-bold text-white uppercase tracking-tight">
@@ -258,7 +286,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
               <div className="text-[11px] text-zinc-400 pt-2 space-y-1 font-mono">
                 <p className="flex items-center justify-center gap-2">
-                  <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Mail className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
                   Email received at:
                   <strong className="text-zinc-200">
                     {ADMIN_EMAIL}
@@ -266,7 +294,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </p>
 
                 <p className="flex items-center justify-center gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
                   Factory: Nazimabad, Karachi, Pakistan
                 </p>
               </div>
@@ -282,21 +310,23 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
             </div>
           ) : (
             /* FORM */
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               {errorMsg && (
-                <div className="p-3 text-xs bg-red-950/60 border border-red-500/40 text-red-300 rounded-sm">
+                <div role="alert" aria-live="assertive" className="p-3 text-xs bg-red-950/60 border border-red-500/40 text-red-300 rounded-sm">
                   {errorMsg}
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-full-name" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Full Name <span className="text-[#D4AF37]">*</span>
                   </label>
                   <input
+                    id="quote-full-name"
                     type="text"
                     required
+                    autoComplete="name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="John Doe / Brand Manager"
@@ -305,12 +335,15 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-email" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Email Address <span className="text-[#D4AF37]">*</span>
                   </label>
                   <input
+                    id="quote-email"
                     type="email"
                     required
+                    autoComplete="email"
+                    inputMode="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="client@company.com"
@@ -321,12 +354,15 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-phone" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Phone / WhatsApp <span className="text-[#D4AF37]">*</span>
                   </label>
                   <input
+                    id="quote-phone"
                     type="tel"
                     required
+                    autoComplete="tel"
+                    inputMode="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+92 300 1234567"
@@ -335,10 +371,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-category" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Cap Category / Style
                   </label>
                   <select
+                    id="quote-category"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
@@ -364,10 +401,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-customization" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Customization Needed
                   </label>
                   <select
+                    id="quote-customization"
                     value={customizationType}
                     onChange={(e) => setCustomizationType(e.target.value)}
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
@@ -382,10 +420,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                  <label htmlFor="quote-quantity" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                     Estimated Production Quantity
                   </label>
                   <select
+                    id="quote-quantity"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     className="w-full px-3 py-2 rounded-sm bg-[#141414] border border-white/15 focus:border-[#D4AF37] focus:outline-none text-xs text-white"
@@ -400,10 +439,11 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
+                <label htmlFor="quote-message" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300 mb-1">
                   Project Details / Message <span className="text-[#D4AF37]">*</span>
                 </label>
                 <textarea
+                  id="quote-message"
                   required
                   rows={3}
                   value={message}
@@ -413,8 +453,8 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between">
-                <p className="text-[10px] text-zinc-500 font-mono">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <p className="hidden sm:block text-[10px] text-zinc-500 font-mono">
                   DISPATCH:{' '}
                   <span className="text-[#D4AF37]">
                     {ADMIN_EMAIL}
@@ -424,14 +464,14 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="sleek-btn-primary px-6 py-2.5 rounded-sm text-xs flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
+                  className="w-full sm:w-auto sleek-btn-primary px-6 py-2.5 rounded-sm text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Generating Response & Sending...</span>
                   ) : (
                     <>
                       <span>Submit Quote Request</span>
-                      <Send className="w-3.5 h-3.5" />
+                      <Send className="w-3.5 h-3.5" aria-hidden="true" />
                     </>
                   )}
                 </button>

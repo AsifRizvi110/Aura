@@ -68,8 +68,39 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
     setExpandedFaqId(prev => (prev === id ? null : id));
   };
 
+  // Schema.org structured data (Organization / LocalBusiness) — helps Google
+  // show rich results (address, contact, logo) for this page. Rendered as
+  // JSON-LD, invisible to users, read by search engine crawlers.
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ClothingStore',
+    name: 'Aura Global Industries',
+    description:
+      'Professional cap manufacturer based in Karachi, Pakistan, delivering premium-quality custom caps, OEM/ODM headwear manufacturing, and private label production for local and international businesses.',
+    email: 'auraglobalindustries@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Nazimabad, Karachi',
+      addressCountry: 'PK'
+    },
+    areaServed: 'Worldwide',
+    makesOffer: {
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Product',
+        name: 'Custom Manufactured Caps & Headwear (OEM/ODM)'
+      }
+    }
+  };
+
   return (
     <div id="about-page-root" className="pt-28 sm:pt-36 pb-20 space-y-20">
+      {/* SEO: structured data so search engines understand this is a
+          Karachi-based cap manufacturer (helps rich snippets / local SEO) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
 
       {/* ========================================================================= */}
       {/* 1. PAGE HEADER */}
@@ -116,7 +147,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
                 Whether supporting emerging fashion labels, multinational corporations with custom apparel uniforms, or global distributors requiring high-volume container shipments, our Karachi facility provides dedicated OEM/ODM manufacturing tailored to exact technical specifications.
               </p>
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="p-4 rounded-sm bg-[#141414] border border-white/5 space-y-1 font-mono">
                   <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-wider">Facility Hub</p>
                   <p className="text-xs font-bold text-white uppercase font-sans">Nazimabad, Karachi</p>
@@ -132,15 +163,26 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
             </div>
 
             <div className="lg:col-span-5 relative">
-  <div className="rounded-sm overflow-hidden border border-white/10 aspect-[4/3] bg-black shadow-2xl">
+  <div
+    className="rounded-sm overflow-hidden border border-white/10 aspect-[4/3] bg-black shadow-2xl"
+    role="img"
+    aria-label="Workers manufacturing custom caps inside Aura Global Industries' factory in Nazimabad, Karachi"
+  >
     <video
       src="/images/Workers_manufacturing_caps_in_fa…_202608200317.mp4"
+      poster="/images/factory-workers-manufacturing-caps-poster.jpg"
       autoPlay
       muted
       loop
       playsInline
+      aria-hidden="true"
+      title="Aura Global Industries factory floor — cap manufacturing in Karachi"
       className="w-full h-full object-cover"
-    />
+    >
+      Your browser does not support embedded videos. This video shows workers
+      manufacturing custom caps at the Aura Global Industries factory in
+      Nazimabad, Karachi.
+    </video>
   </div>
 </div>
 
@@ -224,7 +266,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenQuoteMod
                 <div className="w-14 h-14 rounded-sm overflow-hidden bg-[#141414] border border-[#D4AF37]/30 shrink-0 ">
                   <img
                     src={partner.imageUrl}
-                    alt={partner.imageAlt}
+                    alt={
+                      partner.imageAlt ||
+                      `${partner.name}, ${partner.role} at Aura Global Industries — Karachi-based cap manufacturer`
+                    }
+                    loading="lazy"
+                    width={56}
+                    height={56}
                     className="w-full h-full object-cover"
                   />
                 </div>

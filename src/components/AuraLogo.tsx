@@ -32,6 +32,8 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({
       className={`inline-flex items-center gap-3 select-none cursor-pointer group ${className}`}
       id="aura-brand-logo"
       title="Aura Global Industries - Together For A Stronger Future"
+      role="img"
+      aria-label="Aura Global Industries logo — Together For A Stronger Future"
     >
       {/* 3D Metallic AG Globe Emblem SVG */}
       <div
@@ -43,6 +45,8 @@ export const AuraLogo: React.FC<AuraLogoProps> = ({
           className="w-full h-full drop-shadow-[0_4px_12px_rgba(245,158,11,0.25)]"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+          focusable="false"
         >
           <defs>
             {/* Gold Metallic Gradients */}

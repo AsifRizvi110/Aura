@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ProductItem } from '../types';
 import { X, Check, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
@@ -13,37 +13,60 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onRequestQuote
 }) => {
+  // Close on Escape key, and lock background scroll while the modal is open
+  useEffect(() => {
+    if (!product) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [product, onClose]);
+
   if (!product) return null;
 
   return (
     <div
       id="product-detail-modal-overlay"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
     >
       <div
         id="product-detail-modal-container"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-detail-modal-title"
+        onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl bg-[#0F0F0F] border border-white/15 rounded-sm shadow-2xl overflow-hidden text-zinc-200 max-h-[92vh] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-2.5 py-1 rounded-sm border border-[#D4AF37]/20 font-mono">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 bg-[#0A0A0A]">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-2.5 py-1 rounded-sm border border-[#D4AF37]/20 font-mono shrink-0">
               {product.category}
             </span>
-            <span className="text-[11px] text-zinc-500 font-mono uppercase">• OEM SPECIFICATION</span>
+            <span className="hidden sm:inline text-[11px] text-zinc-500 font-mono uppercase">• OEM SPECIFICATION</span>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-sm bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-sm bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
             aria-label="Close product modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             {/* Image Preview with overlay */}
             <div className="relative rounded-sm overflow-hidden border border-white/10 bg-black aspect-square group">
@@ -51,6 +74,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 src={product.imageUrl}
                 alt={product.altText}
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
@@ -63,7 +88,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Specifications */}
             <div className="space-y-4">
               <div>
-                <h3 className="font-heading text-lg font-bold text-white uppercase tracking-wider mb-2">
+                <h3 id="product-detail-modal-title" className="font-heading text-lg font-bold text-white uppercase tracking-wider mb-2">
                   {product.name}
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
@@ -94,7 +119,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Customization Options */}
               <div>
                 <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Supported Customizations
+                  <Sparkles className="w-3 h-3 text-[#D4AF37]" aria-hidden="true" /> Supported Customizations
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {product.customization.map((opt, idx) => (
@@ -102,7 +127,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       key={idx}
                       className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-sm bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 font-medium"
                     >
-                      <Check className="w-3 h-3" /> {opt}
+                      <Check className="w-3 h-3" aria-hidden="true" /> {opt}
                     </span>
                   ))}
                 </div>
@@ -110,7 +135,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Factory Assurance */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 pt-1">
-                <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-[#D4AF37] shrink-0" aria-hidden="true" />
                 <span>Manufactured in Nazimabad, Karachi, Pakistan with full QA inspection.</span>
               </div>
             </div>
@@ -118,10 +143,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-[#0A0A0A]">
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t border-white/10 bg-[#0A0A0A]">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs uppercase tracking-wider font-bold text-zinc-500 hover:text-white transition-colors cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 text-xs uppercase tracking-wider font-bold text-zinc-500 hover:text-white transition-colors cursor-pointer"
           >
             Close
           </button>
@@ -131,10 +156,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               onClose();
               onRequestQuote(product.name);
             }}
-            className="sleek-btn-primary px-5 py-2 rounded-sm text-xs flex items-center gap-2 cursor-pointer shadow-md"
+            className="w-full sm:w-auto sleek-btn-primary px-5 py-2.5 sm:py-2 rounded-sm text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md"
           >
             <span>Request Quote for this Model</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
         </div>
       </div>

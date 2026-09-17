@@ -29,9 +29,16 @@ const PartnerAvatar: React.FC<{ src: string; alt: string; initials: string }> = 
           onError={() => setHasError(true)}
           className="w-full h-full object-cover object-top"
           loading="lazy"
+          decoding="async"
+          width={48}
+          height={48}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-[#D4AF37] font-bold text-xs tracking-widest font-mono">
+        <div
+          className="w-full h-full flex items-center justify-center bg-zinc-900 text-[#D4AF37] font-bold text-xs tracking-widest font-mono"
+          role="img"
+          aria-label={alt}
+        >
           {initials}
         </div>
       )}
@@ -76,6 +83,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('home')}
+                  aria-label="Go to Home page"
                   className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
                   <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -85,6 +93,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('products')}
+                  aria-label="Go to Products page"
                   className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
                   <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -94,6 +103,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('manufacturing')}
+                  aria-label="Go to Manufacturing page"
                   className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
                   <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -103,6 +113,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('about')}
+                  aria-label="Go to About Us page"
                   className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
                   <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -112,6 +123,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <li>
                 <button
                   onClick={() => handleNav('contact')}
+                  aria-label="Go to Contact page"
                   className="hover:text-[#D4AF37] transition-colors flex items-center gap-1.5 group cursor-pointer"
                 >
                   <ArrowRight className="w-3 h-3 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -131,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/5 hover:border-[#D4AF37]/30 transition-all flex items-center gap-3.5 group">
                 <PartnerAvatar
                   src="/images/hashim.jpg"
-                  alt="Syed Hashim Hussain Rizvi"
+                  alt="Syed Hashim Hussain Rizvi, Partner at Aura Global Industries, Strategic Operations & Global Export Relations"
                   initials="HR"
                 />
                 <div className="min-w-0 flex-1">
@@ -149,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
               <div className="p-3 rounded-2xl bg-zinc-900/80 border border-white/5 hover:border-[#D4AF37]/30 transition-all flex items-center gap-3.5 group">
                 <PartnerAvatar
                   src="/images/masoom.jpeg"
-                  alt="Syed Masoom Raza"
+                  alt="Syed Masoom Raza, Partner at Aura Global Industries, Technical Manufacturing & Quality Engineering"
                   initials="MR"
                 />
                 <div className="min-w-0 flex-1">
@@ -196,6 +208,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
                 <button
                   id="footer-quote-btn"
                   onClick={onOpenQuoteModal}
+                  aria-label="Request a custom cap production quote"
                   className="w-full sleek-btn-primary py-2.5 px-4 rounded-sm flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
                   <span>Request Custom Production</span>
@@ -215,13 +228,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenQuoteModal }) 
         </div>
 
         {/* Bottom Row */}
-        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-zinc-500">
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-widest text-zinc-500 text-center sm:text-left">
           <p>© 2026 Aura Global Industries. All Rights Reserved.</p>
-          <div className="flex items-center gap-4">
-            <a href="mailto:auraglobalindustries@gmail.com" className="hover:text-white transition-colors">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <a href="mailto:auraglobalindustries@gmail.com" className="hover:text-white transition-colors break-all">
               auraglobalindustries@gmail.com
             </a>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <span>Nazimabad, Karachi, Pakistan</span>
           </div>
         </div>

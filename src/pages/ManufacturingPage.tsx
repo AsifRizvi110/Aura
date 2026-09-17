@@ -37,8 +37,31 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
     <Globe key="10" className="w-5 h-5" />
   ];
 
+  // SEO: HowTo structured data — this page literally documents a 10-stage
+  // manufacturing process, which is exactly what Google's HowTo rich result
+  // is designed for.
+  const howToSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'How Aura Global Industries Manufactures Custom Caps',
+    description:
+      'The 10-stage cap manufacturing process at Aura Global Industries, from material selection to global dispatch, at our Karachi, Pakistan factory.',
+    step: MANUFACTURING_STEPS.map((s) => ({
+      '@type': 'HowToStep',
+      position: s.stepNumber,
+      name: s.title,
+      text: s.detailedDesc || s.shortDesc,
+      image: s.imageUrl
+    }))
+  };
+
   return (
     <div id="manufacturing-page-root" className="pt-32 sm:pt-36 pb-20 space-y-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+
       {/* Page Header */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-xs font-semibold text-[#D4AF37]">
@@ -181,6 +204,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Custom Fabric Options Headwear Fabric.png"
               alt="Material Selection at Aura Global Industries"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-auto object-contain block  "
             />
           </div>
@@ -193,6 +217,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Design & Development.png"
               alt="Design and Development CAD Pattern Engineering"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-auto object-contain block"
             />
           </div>
@@ -235,6 +260,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/Accurate Cutting & Stitching.png"
               alt="Precision stitching line in Karachi factory"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-auto object-contain block"
             />
           </div>
@@ -247,6 +273,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="/images/05 Embroidery  Printing.png"
               alt="High-density 3D puff embroidery"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-auto object-contain block"
             />
           </div>
@@ -289,6 +316,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80"
               alt="Quality Control audit at Aura Global Industries"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </div>
@@ -301,6 +329,7 @@ export const ManufacturingPage: React.FC<ManufacturingPageProps> = ({ onOpenQuot
               src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
               alt="Professional Packaging for export"
               referrerPolicy="no-referrer"
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </div>

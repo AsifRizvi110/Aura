@@ -42,7 +42,30 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <div id="home-page-root" className="space-y-20 sm:space-y-28 pb-16">
-      {/* ========================================================================= */}
+      {/* SEO: primary Organization + WebSite structured data for the homepage.
+          This is the main page search engines should treat as the entity's
+          canonical identity, so the richest schema belongs here. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ClothingStore',
+            name: 'Aura Global Industries',
+            description:
+              'Aura Global Industries is a professional cap manufacturer based in Karachi, Pakistan, delivering premium-quality caps with modern manufacturing, custom designs, quality fabrics and reliable production for local and international businesses.',
+            image: '/images/map.jpg',
+            email: 'auraglobalindustries@gmail.com',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Nazimabad, Karachi',
+              addressCountry: 'PK'
+            },
+            areaServed: 'Worldwide',
+            openingHours: 'Mo-Sa 09:00-19:00'
+          })
+        }}
+      />      {/* ========================================================================= */}
       {/* 1. HERO SECTION - SLEEK INTERFACE THEME */}
       {/* ========================================================================= */}
       <section
@@ -164,6 +187,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                       src="/images/map.jpg"
                       alt="Aura Global Industries Cap Production"
                       referrerPolicy="no-referrer"
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -214,11 +238,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 >
   <CapCustomizer />
 </section>
-
-      {/* ========================================================================= */}
-      {/* 2. PRODUCT QUALITY SECTION */}
-      {/* ========================================================================= */}
-      <section id="quality-section"></section>
 
       {/* ========================================================================= */}
       {/* 2. PRODUCT QUALITY SECTION */}
@@ -319,6 +338,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 src={selectedMaterial.imageUrl}
                 alt={`${selectedMaterial.name} fabric close-up - Aura Global Industries`}
                 referrerPolicy="no-referrer"
+                loading="lazy"
                 className="w-full h-auto object-contain block"
               />
               <div className="absolute top-3 left-3 bg-black/80 px-2.5 py-1 rounded-sm text-[10px] uppercase tracking-wider font-semibold text-[#D4AF37] border border-white/10">
@@ -496,6 +516,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                     src={cat.imageUrl}
                     alt={`${cat.name} by Aura Global Industries`}
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

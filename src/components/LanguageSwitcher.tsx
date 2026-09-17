@@ -26,6 +26,15 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Close dropdown on Escape key for better keyboard accessibility
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, []);
+
   const handleSelectLanguage = (code: LanguageCode) => {
     setLanguage(code);
     setIsOpen(false);
@@ -45,14 +54,16 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-[#141414] hover:bg-[#1C1C1C] border border-white/15 hover:border-amber-500/50 text-zinc-300 hover:text-white transition-all text-xs font-mono font-medium cursor-pointer shadow-sm"
         aria-expanded={isOpen}
         aria-haspopup="true"
+        aria-label={`Change language. Current language: ${currentLanguageOption.label}`}
         title="Switch Language / زبان تبدیل کریں"
       >
-        <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
+        <Globe className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
         <span className="text-[11px] uppercase tracking-wider font-semibold">
           {currentLanguageOption.code.toUpperCase()}
         </span>
-        <span className="text-xs">{currentLanguageOption.flag}</span>
+        <span className="text-xs" aria-hidden="true">{currentLanguageOption.flag}</span>
         <ChevronDown
+          aria-hidden="true"
           className={`w-3 h-3 text-zinc-400 transition-transform duration-200 ${
             isOpen ? 'rotate-180 text-amber-400' : ''
           }`}
@@ -63,9 +74,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       {isOpen && (
         <div
           id="language-dropdown-menu"
-          className="absolute right-0 mt-1.5 w-44 rounded-sm bg-[#0E0E0E] border border-amber-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.85)] py-1 z-[100] animate-in fade-in slide-in-from-top-2 duration-150"
+          className="absolute right-0 mt-1.5 w-44 max-w-[85vw] rounded-sm bg-[#0E0E0E] border border-amber-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.85)] py-1 z-[100] animate-in fade-in slide-in-from-top-2 duration-150"
           role="menu"
           aria-orientation="vertical"
+          aria-label="Select language"
         >
           <div className="px-3 py-1.5 border-b border-white/10 text-[9px] font-mono uppercase tracking-widest text-zinc-500 flex items-center justify-between">
             <span>Select Language</span>
@@ -84,17 +96,19 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                       ? 'bg-amber-500/10 text-amber-400 font-semibold'
                       : 'text-zinc-300 hover:bg-white/5 hover:text-white'
                   }`}
-                  role="menuitem"
+                  role="menuitemradio"
+                  aria-checked={isSelected}
+                  aria-label={`Switch language to ${lang.label}`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">{lang.flag}</span>
+                    <span className="text-sm" aria-hidden="true">{lang.flag}</span>
                     <div className="flex flex-col">
                       <span className="font-sans text-xs">{lang.nativeName}</span>
                       <span className="text-[9px] font-mono text-zinc-500">{lang.label}</span>
                     </div>
                   </div>
 
-                  {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />}
                 </button>
               );
             })}

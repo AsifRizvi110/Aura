@@ -21,14 +21,14 @@ const ToastCard: React.FC<ToastCardProps> = ({ toast, onClose }) => {
   const getIcon = () => {
     switch (toast.type) {
       case 'success':
-        return <CheckCircle2 className="w-5 h-5 text-[#D4AF37]" />;
+        return <CheckCircle2 className="w-5 h-5 text-[#D4AF37]" aria-hidden="true" />;
       case 'error':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return <XCircle className="w-5 h-5 text-red-500" aria-hidden="true" />;
       case 'warning':
-        return <AlertCircle className="w-5 h-5 text-amber-500" />;
+        return <AlertCircle className="w-5 h-5 text-amber-500" aria-hidden="true" />;
       case 'info':
       default:
-        return <Info className="w-5 h-5 text-sky-400" />;
+        return <Info className="w-5 h-5 text-sky-400" aria-hidden="true" />;
     }
   };
 
@@ -54,7 +54,7 @@ const ToastCard: React.FC<ToastCardProps> = ({ toast, onClose }) => {
       className={`relative w-full max-w-sm sm:max-w-md p-4 rounded-sm border ${getBorderColor()} text-zinc-200 transition-all duration-300 animate-in slide-in-from-top-4 sm:slide-in-from-bottom-4 fade-in overflow-hidden`}
     >
       {/* Subtle top indicator bar */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-80" aria-hidden="true" />
 
       <div className="flex items-start gap-3">
         <div className="shrink-0 p-1.5 rounded-sm bg-[#181818] border border-white/10 mt-0.5">
@@ -68,7 +68,7 @@ const ToastCard: React.FC<ToastCardProps> = ({ toast, onClose }) => {
             </h4>
             {toast.meta?.timestamp && (
               <span className="text-[10px] font-mono text-zinc-500 flex items-center gap-1 shrink-0">
-                <Clock className="w-3 h-3" />
+                <Clock className="w-3 h-3" aria-hidden="true" />
                 {toast.meta.timestamp}
               </span>
             )}
@@ -83,19 +83,19 @@ const ToastCard: React.FC<ToastCardProps> = ({ toast, onClose }) => {
             <div className="pt-1.5 flex flex-wrap gap-1.5">
               {toast.meta.product && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-sm bg-[#161616] border border-white/10 text-[#D4AF37]">
-                  <Sparkles className="w-3 h-3" />
+                  <Sparkles className="w-3 h-3" aria-hidden="true" />
                   {toast.meta.product}
                 </span>
               )}
               {toast.meta.quantity && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-sm bg-[#161616] border border-white/10 text-zinc-300">
-                  <Layers className="w-3 h-3 text-zinc-500" />
+                  <Layers className="w-3 h-3 text-zinc-500" aria-hidden="true" />
                   {toast.meta.quantity}
                 </span>
               )}
               {toast.meta.email && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-sm bg-[#161616] border border-white/10 text-zinc-400">
-                  <Mail className="w-3 h-3 text-[#D4AF37]" />
+                  <Mail className="w-3 h-3 text-[#D4AF37]" aria-hidden="true" />
                   {toast.meta.email}
                 </span>
               )}
@@ -108,12 +108,12 @@ const ToastCard: React.FC<ToastCardProps> = ({ toast, onClose }) => {
           className="shrink-0 p-1 rounded-sm text-zinc-500 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           aria-label="Close notification"
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
 
       {/* Animated progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5 overflow-hidden">
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5 overflow-hidden" aria-hidden="true">
         <div
           className="h-full bg-[#D4AF37] animate-[toast-progress_5s_linear_forwards]"
           style={{

@@ -59,10 +59,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5 text-zinc-300">
-              <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
               <span className="text-white font-medium">{t('nav.factoryLocation', 'Factory: Nazimabad, Karachi, Pakistan')}</span>
             </span>
-            <span className="text-zinc-700">|</span>
+            <span className="text-zinc-700" aria-hidden="true">|</span>
             <span className="text-zinc-400 uppercase tracking-widest text-[10px]">{t('nav.tagline', 'Cap Manufacturer & Exporter')}</span>
           </div>
 
@@ -71,10 +71,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               href="mailto:auraglobalindustries@gmail.com"
               className="flex items-center gap-1.5 hover:text-[#D4AF37] transition-colors"
             >
-              <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Mail className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
               auraglobalindustries@gmail.com
             </a>
-            <span className="text-zinc-700">|</span>
+            <span className="text-zinc-700" aria-hidden="true">|</span>
             <SocialLinks variant="compact" />
           </div>
         </div>
@@ -89,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         />
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-xs font-semibold uppercase tracking-widest">
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-xs font-semibold uppercase tracking-widest" aria-label="Primary navigation">
           {navItems.map((item) => {
             const isActive = currentPage === item.id;
             return (
@@ -97,6 +97,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={item.id}
                 id={`nav-link-${item.id}`}
                 onClick={() => handleNavClick(item.id)}
+                aria-current={isActive ? 'page' : undefined}
                 className={`transition-colors cursor-pointer relative py-1 ${
                   isActive
                     ? 'text-white'
@@ -105,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 {t(item.labelKey, item.defaultLabel)}
                 {isActive && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#D4AF37]" />
+                  <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#D4AF37]" aria-hidden="true" />
                 )}
               </button>
             );
@@ -119,10 +120,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="nav-get-quote-btn"
             onClick={onOpenQuoteModal}
+            aria-label="Request a custom cap production quote"
             className="sleek-btn-white px-5 py-2 rounded-sm hover:bg-[#D4AF37] hover:text-white transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider"
           >
             <span>{t('nav.getQuote', 'Get a Quote')}</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
           </button>
         </div>
 
@@ -133,6 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="mobile-quote-btn"
             onClick={onOpenQuoteModal}
+            aria-label="Request a custom cap production quote"
             className="sleek-btn-primary px-2.5 py-1.5 rounded-sm text-[10px] uppercase font-bold"
           >
             {t('nav.getQuote', 'Quote')}
@@ -142,17 +145,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             id="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-sm bg-zinc-900 border border-white/10 text-zinc-200 hover:text-white cursor-pointer"
-            aria-label="Toggle mobile menu"
+            aria-label={mobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-drawer"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div
+        <nav
           id="mobile-navigation-drawer"
+          aria-label="Mobile navigation"
           className="md:hidden bg-[#0A0A0A] border-b border-white/10 px-6 py-6 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200"
         >
           <div className="flex flex-col space-y-2">
@@ -162,6 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`w-full text-left px-4 py-3 rounded-sm text-sm uppercase tracking-wider font-semibold transition-colors ${
                     isActive
                       ? 'bg-[#D4AF37]/10 text-[#D4AF37] border-l-2 border-[#D4AF37]'
@@ -180,24 +187,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 onOpenQuoteModal();
               }}
+              aria-label="Request a custom cap production quote"
               className="w-full sleek-btn-primary py-3 rounded-sm text-center font-bold text-xs flex items-center justify-center gap-2"
             >
               <span>{t('nav.getQuote', 'Get a Custom Quote')}</span>
-              <ArrowUpRight className="w-4 h-4" />
+              <ArrowUpRight className="w-4 h-4" aria-hidden="true" />
             </button>
 
             <div className="text-xs text-zinc-400 space-y-1.5 pt-2">
               <p className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
                 Nazimabad, Karachi, Pakistan
               </p>
               <p className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Mail className="w-3.5 h-3.5 text-[#D4AF37]" aria-hidden="true" />
                 auraglobalindustries@gmail.com
               </p>
             </div>
           </div>
-        </div>
+        </nav>
       )}
     </header>
   );
