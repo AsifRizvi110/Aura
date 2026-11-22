@@ -30,14 +30,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   // ✅ Fixed Type Definition & Labels
-  const navItems: { id: PageId; labelKey: string; defaultLabel: string }[] = [
-    { id: 'home', labelKey: 'nav.home', defaultLabel: 'Home' },
-    { id: 'products', labelKey: 'nav.products', defaultLabel: 'Products' },
-    { id: 'tactical', labelKey: 'nav.tactical', defaultLabel: 'Tactical Headwear' }, // ✅ Fixed
-    { id: 'manufacturing', labelKey: 'nav.manufacturing', defaultLabel: 'Manufacturing' },
-    { id: 'about', labelKey: 'nav.about', defaultLabel: 'About' },
-    { id: 'contact', labelKey: 'nav.contact', defaultLabel: 'Contact' }
-  ];
+ const navItems: { id: PageId; labelKey: string; defaultLabel: string }[] = [
+  { id: 'home', labelKey: 'nav.home', defaultLabel: 'Home' },
+  { id: 'products', labelKey: 'nav.products', defaultLabel: 'Products' },
+  { id: 'tactical', labelKey: 'nav.tactical', defaultLabel: 'Tactical Headwear' },
+  { id: 'manufacturing', labelKey: 'nav.manufacturing', defaultLabel: 'Manufacturing' },
+  { id: 'about', labelKey: 'nav.about', defaultLabel: 'About' },
+  { id: 'contact', labelKey: 'nav.contact', defaultLabel: 'Contact' },
+  { id: 'blog', labelKey: 'nav.blog', defaultLabel: 'Blog' }
+];
 
   const handleNavClick = (pageId: PageId) => {
     onNavigate(pageId);

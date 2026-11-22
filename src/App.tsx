@@ -21,6 +21,7 @@ import { ManufacturingPage } from './pages/ManufacturingPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { TacticalHeadwearPage } from './pages/TacticalHeadwearPage';
+import { BlogPage } from './pages/BlogPage';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
@@ -124,9 +125,17 @@ function AppContent() {
           />
         )}
 
-        {/* ===================== CONTACT PAGE ===================== */}
+               {/* ===================== CONTACT PAGE ===================== */}
         {currentPage === 'contact' && (
           <ContactPage />
+        )}
+
+        {/* ===================== BLOG PAGE ===================== */}
+        {currentPage === 'blog' && (
+          <BlogPage
+            onNavigate={handleNavigate}
+            onOpenQuoteModal={handleOpenQuoteModal}
+          />
         )}
 
       </main>
