@@ -1,47 +1,43 @@
-name: Deploy Vite site to Pages
-
+name: Deploy Aura website to Pages
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
-
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-        env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v4
+      - name: Prepare uploaded static release
+        run: |
+          set -euo pipefail
+          mkdir -p dist/assets
+          cp -R about blog contact manufacturing products sampling-ordering shipping-export tactical-headwear images dist/
+          cp index.html 404.html robots.txt CNAME cap.glb dist/
+          cp assets/index-*.js assets/index-*.css dist/assets/
+          python3 - <<'PY'
+          from pathlib import Path
+          from xml.etree import ElementTree as ET
+          root = Path('dist')
+          urls = ET.Element('urlset', xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
+          for page in sorted(root.rglob('index.html')):
+              route = page.relative_to(root).as_posix().removesuffix('index.html')
+              ET.SubElement(ET.SubElement(urls, 'url'), 'loc').text = 'https://auraglobalindustries.com/' + route
+          assert len(urls) == 11, 'Incomplete static release'
+          ET.ElementTree(urls).write(root / 'sitemap.xml', encoding='utf-8', xml_declaration=True)
+          PY
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
